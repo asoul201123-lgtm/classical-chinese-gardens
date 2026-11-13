@@ -2,7 +2,7 @@
 
 在 VS Code 中使用 **Open with Live Server / Open with Server** 打开 `index.html` 即可，不需要额外启动脚本、Node 服务或 npm 安装。推荐通过 `localhost` 或 `127.0.0.1` 访问。
 
-- 演示账号：`gjyg` / `gjyg`；也可点击“免登录，进入园林”。
+- 演示账号：`gjyg` / `gjyg`；也注册新账号或可点击“免登录，进入园林”。
 - 静态页面的注册账户、主题和评分保存在当前浏览器；更换端口、浏览器或清除网站数据后不会共享。
 - 热力图使用**腾讯地图 JavaScript API GL + visualization.Heat**，支持朝代联动、地图缩放及点击园林点查看详情。需要联网；加载失败时会明确显示提示并使用本地示意图，支持重试。
 - 腾讯地图配置在 `tencent-map.js`。沿用原项目的腾讯官方示例 Key，实际部署时请替换成自己的 Key 并配置域名。官方文档：https://lbs.qq.com/webApi/javascriptGL/glGuide/glBasic
