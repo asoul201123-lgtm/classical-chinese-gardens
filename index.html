@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>中国古典园林科普系统 | 沉浸式登录体验</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: 'Inter', 'Noto Serif SC', 'Microsoft YaHei', sans-serif;
+    }
+
+    .page {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .video-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0a1f14 0%, #1a3c2d 100%);
+    }
+
+    .video-item {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+      filter: brightness(0.92) contrast(1.06);
+      transform: scale(1.02);
+    }
+
+    .video-item.active {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    .mask {
+      position: absolute;
+      inset: 0;
+      background:
+              linear-gradient(
+                      90deg,
+                      rgba(8, 22, 15, 0.58) 0%,
+                      rgba(10, 31, 20, 0.42) 34%,
+                      rgba(10, 31, 20, 0.18) 60%,
+                      rgba(10, 31, 20, 0.36) 100%
+              ),
+              linear-gradient(
+                      180deg,
+                      rgba(5, 16, 11, 0.16) 0%,
+                      rgba(5, 16, 11, 0.28) 100%
+              );
+      z-index: 2;
+    }
+
+    .mask::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+              circle at 24% 48%,
+              rgba(255,255,255,0.04) 0%,
+              rgba(0, 0, 0, 0.22) 100%
+      );
+      pointer-events: none;
+    }
+
+    .content {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 7vw;
+      max-width: 1700px;
+      margin: 0 auto;
+    }
+
+    .left-content {
+      position: relative;
+      flex: 1;
+      max-width: 54%;
+      min-height: 560px;
+      color: var(--text-light);
+      padding-right: 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding-top: 100px;
+      transform: translateX(100px) translateY(-120px) scale(1.2); 
+      transform-origin: left top;
+    }
+
+    .brand-art {
+      position: relative;
+      width: 520px;
+      height: 320px;
+      margin-bottom: 10px;
+    }
+
+    .brand-art .art-char {
+      position: absolute;
+      font-family: 'GongFanNuFangTi', 'KaiTi', 'STKaiti', serif;
+      font-size: 118px;
+      line-height: 1;
+      color: var(--art-color);
+      text-shadow:
+              0 6px 18px rgba(0,0,0,0.24),
+              0 2px 8px rgba(0,0,0,0.18);
+      user-select: none;
+    }
+
+    .brand-art .art-gu {
+      left: 8px;
+      top: -20px;
+      transform: rotate(-8deg);
+    }
+
+    .brand-art .art-yun {
+      left: 0;
+      top: 110px;
+      transform: rotate(-6deg);
+      font-size: 132px;
+    }
+
+    .brand-art .art-jian {
+      left: 92px;
+      top: 36px;
+      transform: rotate(8deg);
+    }
+
+    .brand-art .art-guan {
+      left: 90px;
+      top: 182px;
+      transform: rotate(4deg);
+    }
+
+    .brand-art .art-sub {
+      position: absolute;
+      left: 220px;
+      top: 240px;  
+      font-family: 'HengShanMaoXing', 'KaiTi', 'STKaiti', serif;
+      font-size: 52px;  
+      line-height: 1;
+      color: #f4f8f5;
+      letter-spacing: 12px;
+      text-shadow:
+              0 4px 14px rgba(0,0,0,0.22),
+              0 2px 6px rgba(0,0,0,0.16);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .main-title {
+      position: relative;
+      width: fit-content;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 4.45rem;
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.8px;
+      color: rgba(245, 249, 246, 0.96);
+      text-shadow:
+              0 5px 20px rgba(0, 0, 0, 0.28),
+              0 10px 28px rgba(0, 0, 0, 0.16);
+      margin-top: 0;
+    }
+
+    .main-title::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -14px;
+      width: 210px;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(101, 205, 154, 0.95), rgba(101, 205, 154, 0));
+      border-radius: 999px;
+    }
+
+    .login-container {
+      width: 420px;
+      flex-shrink: 0;
+    }
+
+    .login-card {
+      width: 100%;
+      padding: 3rem 2.5rem 2.4rem;
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: var(--shadow-medium);
+      color: var(--text-light);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-card:hover {
+      box-shadow: var(--shadow-heavy);
+      border-color: rgba(255, 255, 255, 0.22);
+      transform: translateY(-4px);
+    }
+
+    .login-header {
+      margin-bottom: 2.3rem;
+      text-align: center;
+    }
+
+    .login-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 2.45rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: rgba(255,255,255,0.95);
+      text-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .login-subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-weight: 400;
+      letter-spacing: 0.2px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.55rem;
+      color: rgba(255,255,255,0.95);
+      letter-spacing: 0.3px;
+    }
+
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-wrapper .form-input {
+      padding-right: 50px !important;
+      position: relative;
+      z-index: 1;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2d6a4f;
+      transition: all var(--transition-normal);
+      z-index: 20;
+      width: 36px;
+      height: 36px;
+      outline: none;
+    }
+
+    .password-toggle:hover {
+      color: #173b2c;
+    }
+
+    .password-toggle:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+
+    .password-toggle svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 56px;
+      padding: 0 1.25rem;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: all var(--transition-normal);
+      position: relative;
+      z-index: 1;
+    }
+    .form-input::-ms-reveal,
+    .form-input::-ms-clear,
+    .form-input::-webkit-credentials-auto-fill-button,
+    .form-input::-webkit-caps-lock-indicator,
+    .form-input::-webkit-reveal-password,
+    .form-input::-webkit-textfield-decoration-container {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    /* 针对所有密码输入框隐藏浏览器默认图标 */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear,
+    input[type="password"]::-webkit-credentials-auto-fill-button,
+    input[type="password"]::-webkit-caps-lock-indicator,
+    input[type="password"]::-webkit-reveal-password,
+    input[type="password"]::-webkit-textfield-decoration-container {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary-light);
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .form-input::placeholder {
+      color: rgba(0, 0, 0, 0.45);
+      font-weight: 300;
+    }
+
+    .form-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 1.95rem 0 2rem;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-custom {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-normal);
+    }
+
+    input[type="checkbox"]:checked + .checkbox-custom {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .checkbox-custom::after {
+      content: '✓';
+      color: white;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity var(--transition-normal);
+    }
+
+    input[type="checkbox"]:checked + .checkbox-custom::after {
+      opacity: 1;
+    }
+
+    input[type="checkbox"] {
+      display: none;
+    }
+
+    .forgot-link {
+      color: var(--primary-light);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all var(--transition-normal);
+    }
+
+    .forgot-link:hover {
+      color: #b8f0d4;
+    }
+
+    .login-btn {
+      width: 100%;
+      height: 58px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #26714f, #15533b);
+      color: var(--text-light);
+      font-size: 1.16rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 26px rgba(23, 83, 59, 0.32);
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px rgba(23, 83, 59, 0.38);
+    }
+
+    .btn-icon {
+      font-size: 1.2rem;
+      transition: transform var(--transition-normal);
+    }
+
+    .login-btn:hover .btn-icon {
+      transform: translateX(4px);
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 1.9rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .register-link a {
+      color: var(--primary-light);
+      text-decoration: none;
+      font-weight: 600;
+      margin-left: 8px;
+      transition: all var(--transition-normal);
+    }
+
+    .register-link a:hover {
+      color: #b8f0d4;
+    }
+
+    .carousel-controls {
+      position: absolute;
+      right: 3rem;
+      bottom: 2.6rem;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .dots {
+      display: flex;
+      gap: 0.7rem;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.34);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      border: 2px solid transparent;
+    }
+
+    .dot:hover {
+      background: rgba(255, 255, 255, 0.58);
+      transform: scale(1.15);
+    }
+
+    .dot.active {
+      width: 32px;
+      border-radius: 999px;
+      background: #91e0b5;
+      border-color: rgba(255, 255, 255, 0.45);
+      box-shadow: 0 0 15px rgba(94, 193, 149, 0.45);
+    }
+
+    .carousel-nav {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .nav-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: var(--text-light);
+      font-size: 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-normal);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 1450px) {
+      .brand-art {
+        transform: scale(0.92);
+        transform-origin: left center;
+        margin-bottom: 0.4rem;
+      }
+
+      .main-title {
+        font-size: 3.85rem;
+      }
+    }
+
+    @media (max-width: 1300px) {
+      .content {
+        padding: 0 5vw;
+      }
+
+      .left-content {
+        max-width: 56%;
+      }
+
+      .main-title {
+        font-size: 3.35rem;
+      }
+
+      .brand-art {
+        transform: scale(0.82);
+        transform-origin: left center;
+        margin-bottom: -0.4rem;
+      }
+    }
+
+  </style>
+    <script src="asset-manifest.js"></script>
+    <script src="runtime.js"></script>
+</head>
+<body>
+<div class="page">
+  <div class="video-bg" id="videoBg">
+    <video class="video-item active" muted autoplay playsinline preload="auto" src="./videos/111-1.mp4"></video>
+    <video class="video-item" muted autoplay playsinline preload="auto" src="./videos/112-1.mp4"></video>
+    <video class="video-item" muted autoplay playsinline preload="auto" src="./videos/121-1.mp4"></video>
+    <video class="video-item" muted autoplay playsinline preload="auto" src="./videos/122-1.mp4"></video>
+  </div>
+
+  <div class="mask"></div>
+
+  <div class="content">
+    <div class="left-content">
+      <div class="brand-art fade-in-up delay-2">
+        <span class="art-char art-gu">古</span>
+        <span class="art-char art-jian">建</span>
+        <span class="art-char art-yun">云</span>
+        <span class="art-char art-guan">观</span>
+        <div class="art-sub">数据可视化</div>
+      </div>
+
+      <h1 class="main-title fade-in-up delay-3">
+        欢迎进入中国<br>古典园林科普系统
+      </h1>
+    </div>
+
+    <div class="login-container">
+      <div class="login-card fade-in-up delay-5" id="authCard">
+        <!-- 登录表单区 -->
+        <div id="loginView">
+          <div class="login-header">
+            <h2 class="login-title">用户登录</h2>
+            <p class="login-subtitle">请输入您的账号信息以继续探索</p>
+          </div>
+
+          <form id="loginForm">
+            <div class="form-group">
+              <label class="form-label">用户名</label>
+              <input type="text" class="form-input" placeholder="请输入用户名" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">密码</label>
+              <div class="password-wrapper">
+                <input type="password" class="form-input" id="loginPassword" placeholder="请输入密码" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('loginPassword', this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+  <line x1="1" y1="1" x2="23" y2="23"></line>
+</svg>
+                </button>
+              </div>
+            </div>
+<!-- 
+            <div class="form-options">
+              <label class="checkbox-label">
+                <input type="checkbox">
+                <div class="checkbox-custom"></div>
+                记住登录状态
+              </label>
+              <a href="home.html" class="forgot-link">游客浏览</a>
+            </div> -->
+
+            <button type="submit" class="login-btn" id="loginBtnSubmit">
+              立即登录
+              <span class="btn-icon">→</span>
+            </button>
+          </form>
+
+          <div class="register-link">
+            还没有账户？<a href="#" id="toRegisterBtn">立即注册</a>
+            <a class="guest-entry" href="home.html">免登录，进入园林</a>
+          </div>
+        </div>
+
+        <!-- 注册表单区 -->
+        <div id="registerView" style="display: none;">
+          <div class="login-header">
+            <h2 class="login-title">账号注册</h2>
+            <p class="login-subtitle">创建新账号开启园林探索之旅</p>
+          </div>
+
+          <form id="registerForm">
+            <div class="form-group">
+              <label class="form-label">用户名</label>
+              <input type="text" class="form-input" id="regUser" placeholder="请设置您的用户名" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">密码</label>
+              <div class="password-wrapper">
+                <input type="password" class="form-input" id="regPass" placeholder="请设置密码" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('regPass', this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+  <line x1="1" y1="1" x2="23" y2="23"></line>
+</svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">重复密码</label>
+              <div class="password-wrapper">
+                <input type="password" class="form-input" id="regPass2" placeholder="请再次输入密码" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('regPass2', this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+  <line x1="1" y1="1" x2="23" y2="23"></line>
+</svg>
+                </button>
+              </div>
+            </div>
+
+            <div style="font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.78); margin: 0 0 1.2rem;">
+              密码不少于8位，建议字母、数字、其他字符混合
+            </div>
+
+            <button type="submit" class="login-btn" id="regBtnSubmit">
+              完成注册
+              <span class="btn-icon">→</span>
+            </button>
+          </form>
+
+          <div class="register-link">
+            已有账户？<a href="#" id="toLoginBtn">直接登录</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carousel-controls">
+    <div class="carousel-nav">
+      <button class="nav-btn" id="prevBtn">←</button>
+      <button class="nav-btn" id="nextBtn">→</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const videos = Array.from(document.querySelectorAll('.video-item'));
+    const dotsWrap = document.getElementById('dots');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const toRegisterBtn = document.getElementById('toRegisterBtn');
+    const toLoginBtn = document.getElementById('toLoginBtn');
+    const loginView = document.getElementById('loginView');
+    const registerView = document.getElementById('registerView');
+    const authCard = document.getElementById('authCard');
+
+    let current = 0;
+    let timer = null;
+    let isAutoPlaying = true;
+
+    videos.forEach((_, index) => {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (index === 0 ? ' active' : '');
+      dot.addEventListener('click', () => {
+        switchVideo(index);
+        restartAutoPlay();
+      });
+      dotsWrap.appendChild(dot);
+    });
+
+    const dots = Array.from(document.querySelectorAll('.dot'));
+
+    videos.forEach(video => {
+      video.muted = true;
+      video.playsInline = true;
+      video.loop = true;
+      video.load();
+    });
+
+    function playCurrentVideo() {
+      const video = videos[current];
+      video.play().catch(e => {
+        console.log('视频播放失败:', e);
+      });
+    }
+
+    function switchVideo(nextIndex) {
+      if (nextIndex === current) return;
+
+      videos[current].classList.remove('active');
+      dots[current].classList.remove('active');
+
+      current = nextIndex;
+
+      videos[current].classList.add('active');
+      dots[current].classList.add('active');
+
+      playCurrentVideo();
+    }
+
+    function nextVideo() {
+      const nextIndex = (current + 1) % videos.length;
+      switchVideo(nextIndex);
+    }
+
+    function prevVideo() {
+      const prevIndex = (current - 1 + videos.length) % videos.length;
+      switchVideo(prevIndex);
+    }
+
+    function startAutoPlay() {
+      if (isAutoPlaying) {
+        timer = setInterval(nextVideo, 6000);
+      }
+    }
+
+    function restartAutoPlay() {
+      clearInterval(timer);
+      startAutoPlay();
+    }
+
+    function pauseAutoPlay() {
+      isAutoPlaying = false;
+      clearInterval(timer);
+    }
+
+    function resumeAutoPlay() {
+      isAutoPlaying = true;
+      startAutoPlay();
+    }
+
+    prevBtn.addEventListener('click', () => {
+      prevVideo();
+      restartAutoPlay();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      nextVideo();
+      restartAutoPlay();
+    });
+
+    const page = document.querySelector('.page');
+    page.addEventListener('mouseenter', pauseAutoPlay);
+    page.addEventListener('mouseleave', resumeAutoPlay);
+
+    page.addEventListener('touchstart', pauseAutoPlay);
+    page.addEventListener('touchend', () => {
+      setTimeout(resumeAutoPlay, 3000);
+    });
+
+    function getCharTypeCount(password) {
+      let count = 0;
+      if (/[a-zA-Z]/.test(password)) count++;
+      if (/\d/.test(password)) count++;
+      if (/[^a-zA-Z0-9]/.test(password)) count++;
+      return count;
+    }
+
+    function isSequentialPassword(password) {
+      const value = password.toLowerCase();
+      const asc = '0123456789abcdefghijklmnopqrstuvwxyz';
+      const desc = asc.split('').reverse().join('');
+      return asc.includes(value) || desc.includes(value);
+    }
+
+    function isWeakPassword(password) {
+      const value = password.trim();
+      const lower = value.toLowerCase();
+      const weakList = [
+        '12345678', '123456789', '1234567890',
+        '87654321', '987654321', '9876543210',
+        '11111111', '00000000', '66666666', '88888888',
+        'password', 'password1', 'qwertyui', 'abcdefgh', 'abcdefg1'
+      ];
+
+      if (value.length < 8) return true;
+      if (weakList.includes(lower)) return true;
+      if (/^(.)\1{7,}$/.test(value)) return true;
+      if (isSequentialPassword(value)) return true;
+      if (getCharTypeCount(value) < 2) return true;
+
+      return false;
+    }
+
+    async function postAccount(url, username, password) {
+      return GardenApp.account(url, username, password);
+    }
+
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const username = this.querySelector('input[type="text"]').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      if (!username || !password) {
+        alert('请输入用户名和密码');
+        return;
+      }
+
+      const btn = this.querySelector('.login-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '登录中...';
+      btn.disabled = true;
+
+      postAccount('login.php', username, password)
+              .then(result => {
+                if (result === 'yes') {
+                  window.location.href = 'home.html';
+                } else {
+                  alert('用户名或密码错误');
+                }
+              })
+              .catch(error => {
+                alert(error.message);
+              })
+              .finally(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+              });
+    });
+
+    registerForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const regUser = document.getElementById('regUser').value.trim();
+      const regPass = document.getElementById('regPass').value;
+      const regPass2 = document.getElementById('regPass2').value;
+
+      if (!regUser || !regPass || !regPass2) {
+        alert('请完整填写注册信息');
+        return;
+      }
+
+      if (regPass !== regPass2) {
+        alert('两次输入的密码不一致，不能注册');
+        return;
+      }
+
+      if (isWeakPassword(regPass)) {
+        alert('密码过于简单，请设置不少于8位且包含字母、数字或其他字符组合的密码');
+        return;
+      }
+
+      const btn = document.getElementById('regBtnSubmit');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '注册中...';
+      btn.disabled = true;
+
+      postAccount('register.php', regUser, regPass)
+              .then(result => {
+                if (result === 'yes') {
+                  alert('注册成功，请使用新账号登录');
+                  registerView.style.opacity = '0';
+                  registerView.style.transform = 'translateX(20px)';
+
+                  setTimeout(() => {
+                    registerView.style.display = 'none';
+                    loginView.style.display = 'block';
+                    loginView.offsetHeight;
+                    loginView.style.opacity = '1';
+                    loginView.style.transform = 'translateX(0)';
+                  }, 300);
+                } else {
+                  alert('注册失败：用户名已存在，或密码不符合要求');
+                }
+              })
+              .catch(error => {
+                alert(error.message);
+              })
+              .finally(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+              });
+    });
+
+    // 切换到注册视图
+    toRegisterBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      loginView.style.opacity = '0';
+      loginView.style.transform = 'translateX(-20px)';
+
+      setTimeout(() => {
+        loginView.style.display = 'none';
+        registerView.style.display = 'block';
+        // 强制重绘
+        registerView.offsetHeight;
+        registerView.style.opacity = '1';
+        registerView.style.transform = 'translateX(0)';
+      }, 300);
+    });
+
+    // 切换到登录视图
+    toLoginBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      registerView.style.opacity = '0';
+      registerView.style.transform = 'translateX(20px)';
+
+      setTimeout(() => {
+        registerView.style.display = 'none';
+        loginView.style.display = 'block';
+        // 强制重绘
+        loginView.offsetHeight;
+        loginView.style.opacity = '1';
+        loginView.style.transform = 'translateX(0)';
+      }, 300);
+    });
+
+    // 初始动画状态设置
+    loginView.style.transition = 'all 0.3s ease';
+    registerView.style.transition = 'all 0.3s ease';
+    registerView.style.opacity = '0';
+    registerView.style.transform = 'translateX(20px)';
+
+    // 密码显示/隐藏功能
+    window.togglePassword = function(inputId, button) {
+  const input = document.getElementById(inputId);
+  const svg = button.querySelector('svg');
+  
+  if (input.type === 'password') {
+    input.type = 'text';
+    svg.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
+  } else {
+    input.type = 'password';
+    svg.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`;
+  }
+};
+
+    playCurrentVideo();
+    startAutoPlay();
+  });
+</script>
+</body>
+</html>

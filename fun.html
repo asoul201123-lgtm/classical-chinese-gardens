@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>园趣 · AI 智囊 - 中国古代园林</title>
+    <link
+      rel="stylesheet"
+      href="vendor/fontawesome/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+      <script src="asset-manifest.js"></script>
+    <script src="runtime.js"></script>
+</head>
+  <body onload="initPage('fun')">
+    <canvas id="ink-canvas"></canvas>
+
+    <button class="theme-toggle" onclick="toggleNightMode()">
+      <i class="fa-solid fa-moon"></i> 夜游园林
+    </button>
+
+    <nav>
+      <div class="nav-title" onclick="window.location.href='home.html'" style="cursor: pointer;" title="返回首页"><i class="fa-solid fa-leaf"></i> 中国古典园林科普系统</div>
+    </nav>
+
+    <div class="container">
+      <div class="tab-bar">
+        <div class="tab" onclick="window.location.href = 'gallery.html'">
+          <i class="fa-solid fa-sitemap"></i> 历代风华
+        </div>
+        <div class="tab" onclick="window.location.href = 'earth.html'">
+          <i class="fa-solid fa-cubes"></i> 构造分类
+        </div>
+        <div class="tab" onclick="window.location.href = 'philosophy.html'">
+          <i class="fa-solid fa-scroll"></i> 人物与著作
+        </div>
+        <div class="tab" onclick="window.location.href = 'game.html'">
+          <i class="fa-solid fa-hourglass-half"></i> 意象哲学
+        </div>
+        <div class="tab active" onclick="window.location.href = 'fun.html'">
+          <i class="fa-solid fa-robot"></i> AI 智囊
+        </div>
+      </div>
+
+      <!-- 园趣 · AI 智囊 内容 -->
+      <div class="panel show" id="main-tab-4">
+        <div class="module-card">
+          <div class="module-title">营造互动游戏：搜集明清私家园林碎片</div>
+          <p
+            style="
+              text-align: center;
+              color: var(--body-text);
+              opacity: 0.8;
+              margin-bottom: 20px;
+            "
+          >
+            提示：请在下方选出
+            <b>3</b> 个属于“江南古典私家园林”的典型构件，然后点击组合。
+          </p>
+          <div
+            class="game-area"
+            style="background: none; box-shadow: none; padding: 0"
+          >
+            <div class="game-content">
+              <div
+                class="fragments-container"
+                id="game-board"
+                style="margin-bottom: 20px"
+              ></div>
+              <div style="text-align: center">
+                <button
+                  class="game-btn"
+                  onclick="checkGameResult()"
+                  style="display: inline-block"
+                >
+                  <i class="fa-solid fa-hammer"></i> 组合园林
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="module-card">
+    <div class="module-title">AI 园林智囊</div>
+    
+    <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+        <!-- 左侧：头像、描述、建议问题 -->
+        <div style="flex: 1; min-width: 250px;">
+            <div class="ai-avatar-wrapper" style="text-align: center;">
+                <img src="image/宋徽宗赵信.png" alt="宋徽宗" class="ai-avatar">
+            </div>
+            <p class="ai-description" style="margin-top: 15px; text-align: justify;">
+                欢迎来到“园趣”AI 智囊空间。在这里，您可以与跨越千年的造园智慧对话。无论是探寻特定园林的营建秘辛，还是请教如何“叠石理水”，助手都将为您解答。
+            </p>
+            
+            <div class="ai-suggestions">
+                <p class="suggestions-title">
+                    <i class="fa-solid fa-comment-dots"></i> 您可以试着问我：
+                </p>
+                <ul class="suggestions-list" id="suggestions-list">
+                    <li data-question="如何评价《园冶》的历史地位？">• “如何评价《园冶》的历史地位？”</li>
+                    <li data-question="江南园林中‘借景’的经典案例有哪些？">• “江南园林中‘借景’的经典案例有哪些？”</li>
+                    <li data-question="帮我推荐一处适合春天游览的苏州名园。">• “帮我推荐一处适合春天游览的苏州名园。”</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 右侧：对话框 -->
+        <div style="flex: 1; min-width: 300px;">
+            <div class="ai-chat-area">
+                <div class="ai-chat-messages-mini" id="ai-chat-messages-mini" style="height: 350px; overflow-y: auto; background: rgba(0,0,0,0.03); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+                    <div class="ai-chat-message bot">
+                        <i class="fa-solid fa-leaf"></i>
+                        <div class="message-content" style="text-align: left;">您好！可检索项目内的园林知识，例如输入园林名称或“借景”。</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; flex-direction: column;">
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="ai-question-input" placeholder="输入您的问题..." style="flex: 1; padding: 10px; border: 1px solid var(--bg-divider); border-radius: 24px; background: var(--page-bg-1); color: var(--body-text);">
+                        <button id="ai-ask-btn" style="padding: 10px 20px; background: var(--emphasis); color: white; border: none; border-radius: 24px; cursor: pointer;">
+                            <i class="fa-solid fa-paper-plane"></i> 提问
+                        </button>
+                    </div>
+                    <div id="ai-input-error-container" style="height: 20px; color: #e74c3c; font-size: 12px; padding-left: 10px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="module-card">
+    <div class="module-title">园中趣事 · 飞花令</div>
+    <div class="fun-game-grid">
+        <!-- 对联接龙卡片 -->
+        <div class="fun-game-card">
+            <i class="fa-solid fa-feather-pointed"></i>
+            <h4>对联接龙</h4>
+            <div class="game-preview-text">
+                <span class="thinking-text" id="couplet-preview">点击下方按钮开始对联接龙</span>
+            </div>
+            <p class="game-desc">与 AI 共同完成一副园林楹联，感受文字之美。</p>
+            <button class="btn-coming-soon" id="couplet-btn" style="background:  #2d6a4f; opacity: 1; cursor: pointer;">AI 对联接龙</button>
+        </div>
+        
+        <!-- AI 园林诗词赏析卡片 -->
+<div class="fun-game-card">
+    <i class="fa-solid fa-leaf"></i>
+    <h4>园林诗词赏析</h4>
+    <div class="game-preview-text">
+        输入一句园林诗词<br>
+        <span class="thinking-text">如：池塘生春草，园柳变鸣禽</span>
+    </div>
+    <p class="game-desc">AI 解析诗词中的造园意境与手法</p>
+    <button class="btn-coming-soon" id="poem-btn" style="background: #2d6a4f; opacity: 1; cursor: pointer;">AI 赏析</button>
+</div>
+    </div>
+</div>
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    <script>
+      if (typeof restoreNightMode === 'function') {
+        restoreNightMode();
+    }
+      // 打字机效果函数
+      function typeWriterEffect(element, text, speed = 50) {
+        return new Promise((resolve) => {
+          let i = 0;
+          element.textContent = '';
+          
+          function type() {
+            if (i < text.length) {
+              element.textContent += text.charAt(i);
+              i++;
+              
+              // 自动滚动到底部
+              const messagesContainer = document.getElementById('ai-chat-messages-mini');
+              if (messagesContainer) {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+              }
+              
+              setTimeout(type, speed);
+            } else {
+              resolve();
+            }
+          }
+          
+          type();
+        });
+      }
+
+      // 添加消息到聊天区域
+      function addMessage(content, isUser = false) {
+        const messagesContainer = document.getElementById('ai-chat-messages-mini');
+        if (!messagesContainer) return;
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `ai-chat-message ${isUser ? 'user' : 'bot'}`;
+        
+        const icon = document.createElement('i');
+        icon.className = isUser ? 'fa-solid fa-user' : 'fa-solid fa-leaf';
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        
+        messageDiv.appendChild(icon);
+        messageDiv.appendChild(contentDiv);
+        messagesContainer.appendChild(messageDiv);
+
+        // 如果是 AI 回复,使用打字机效果
+        if (!isUser) {
+          return typeWriterEffect(contentDiv, content, 5);
+        } else {
+          contentDiv.textContent = content;
+        }
+
+        // 自动滚动到底部
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      async function getAIResponse(question) {
+        return GardenApp.ask('question', question);
+      }
+
+      // 执行 AI 搜索
+      async function performAISearch() {
+        const input = document.getElementById('ai-question-input');
+        if (input.disabled) return;
+        const value = input.value.trim();
+        
+        if (value === '') {
+          // 输入框变红震动提示
+          input.classList.add('input-error');
+          
+          // 显示错误提示文字
+          const errorContainer = document.getElementById('ai-input-error-container');
+          if (errorContainer) {
+            errorContainer.innerHTML = '<div class="input-error-text">请输入您的问题</div>';
+          }
+          
+          setTimeout(() => {
+            input.classList.remove('input-error');
+            if (errorContainer) errorContainer.innerHTML = '';
+          }, 2000);
+          return;
+        }
+
+        // 禁用输入框和按钮
+        input.disabled = true;
+        const askBtn = document.getElementById('ai-ask-btn');
+        askBtn.disabled = true;
+        askBtn.style.opacity = '0.5';
+        askBtn.style.cursor = 'not-allowed';
+        
+        // 添加用户问题
+        addMessage(value, true);
+        input.value = '';
+
+        try {
+          const response = await getAIResponse(value);
+          await addMessage(response, false);
+        } catch (error) {
+          await addMessage(error.message, false);
+        } finally {
+          input.disabled = false;
+          askBtn.disabled = false;
+          askBtn.style.opacity = '1';
+          askBtn.style.cursor = 'pointer';
+          input.focus();
+        }
+      }
+      
+      // 键盘事件处理
+      function handleAIInputKeydown(event) {
+        if (event.key === 'Enter') {
+          performAISearch();
+        }
+      }
+
+      // 页面加载时恢复夜游模式状态
+      document.addEventListener('DOMContentLoaded', function() {
+        if (typeof restoreNightMode === 'function') {
+          restoreNightMode();
+        }
+      });
+
+      // 提问按钮点击事件
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('#suggestions-list li').forEach(item => {
+          item.tabIndex = 0;
+          const ask = () => { const input = document.getElementById('ai-question-input'); if (input.disabled) return; input.value = item.dataset.question; performAISearch(); };
+          item.onclick = ask;
+          item.onkeydown = event => { if (event.key === 'Enter') ask(); };
+        });
+        const askBtn = document.getElementById('ai-ask-btn');
+        if (askBtn) {
+          askBtn.addEventListener('click', performAISearch);
+        }
+        
+        // 绑定回车键事件
+        const input = document.getElementById('ai-question-input');
+        if (input) {
+          input.addEventListener('keydown', handleAIInputKeydown);
+        }
+      });
+    </script>
+    <div id="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <h2 id="m-title"></h2>
+        <img id="m-img" style="display: none;">
+        <div id="m-text"></div>
+    </div>
+</div>
+<script>
+    
+</script>
+  </body>
+</html>

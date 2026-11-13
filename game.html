@@ -1,0 +1,1434 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>演变史与意象哲学 - 中国古代园林</title>
+    <link
+      rel="stylesheet"
+      href="vendor/fontawesome/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="vendor/echarts.min.js"></script>
+      <script src="asset-manifest.js"></script>
+    <script src="runtime.js"></script>
+</head>
+  <body onload="initPage('game')">
+    <canvas id="ink-canvas"></canvas>
+
+    <button class="theme-toggle" onclick="toggleNightMode()">
+      <i class="fa-solid fa-moon"></i> 夜游园林
+    </button>
+
+    <nav>
+      <div
+        class="nav-title"
+        onclick="window.location.href = 'home.html'"
+        style="cursor: pointer"
+        title="返回首页"
+      >
+        <i class="fa-solid fa-leaf"></i>中国古典园林科普系统
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="tab-bar">
+        <div class="tab" onclick="window.location.href = 'gallery.html'">
+          <i class="fa-solid fa-sitemap"></i> 历代风华
+        </div>
+        <div class="tab" onclick="window.location.href = 'earth.html'">
+          <i class="fa-solid fa-cubes"></i> 构造分类
+        </div>
+        <div class="tab" onclick="window.location.href = 'philosophy.html'">
+          <i class="fa-solid fa-scroll"></i> 人物与著作
+        </div>
+        <div class="tab active" onclick="window.location.href = 'game.html'">
+          <i class="fa-solid fa-hourglass-half"></i> 意象哲学
+        </div>
+        <div class="tab" onclick="window.location.href = 'fun.html'">
+          <i class="fa-solid fa-robot"></i> AI 智囊
+        </div>
+      </div>
+
+      <div class="panel show" id="main-tab-2">
+        <!-- 1. 3D 历代园林意象数据球 -->
+        <div class="module-card">
+          <div class="module-title">3D 历代园林意象数据球</div>
+          <p
+            style="text-align: center; font-size: 14px; color: var(--sub-title)"
+          >
+            <i class="fa-solid fa-hand-pointer"></i>
+            鼠标悬停并移动可控制星球自转
+          </p>
+          <canvas
+            id="wordcloud-3d"
+            width="1200"
+            height="500"
+            style="width: 100%; display: block"
+          ></canvas>
+        </div>
+
+        <!-- 2. 思想影响力演变轨迹 -->
+        <div class="module-card">
+          <div class="module-title">思想影响力演变轨迹</div>
+          <div
+            class="influence-timeline-container"
+            style="
+              width: 100%;
+              padding: 40px;
+              background: transparent;
+              border-radius: 15px;
+            "
+          >
+            <!-- 此处保持原有的折线图内容 -->
+            <div style="display: flex; gap: 40px; align-items: flex-start">
+              <!-- 左侧：占比柱 + 折线图 -->
+              <div style="flex: 1">
+                <div
+                  style="
+                    display: flex;
+                    gap: 30px;
+                    align-items: flex-start;
+                    margin-bottom: 30px;
+                  "
+                >
+                  <!-- 占比柱 -->
+                  <div
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      gap: 15px;
+                    "
+                  >
+                    <div
+                      id="stack-bar"
+                      style="
+                        width: 60px;
+                        height: 280px;
+                        display: flex;
+                        flex-direction: column-reverse;
+                        border-radius: 30px;
+                        overflow: hidden;
+                        border: 2px solid rgba(45, 106, 79, 0.2);
+                        box-shadow:
+                          0 8px 32px rgba(0, 0, 0, 0.1),
+                          inset 0 1px 0 rgba(255, 255, 255, 0.4);
+                        position: relative;
+                      "
+                    >
+                      <div
+                        style="
+                          position: absolute;
+                          top: 0;
+                          left: 0;
+                          right: 0;
+                          height: 40%;
+                          background: linear-gradient(
+                            to bottom,
+                            rgba(255, 255, 255, 0.3) 0%,
+                            rgba(255, 255, 255, 0) 100%
+                          );
+                          pointer-events: none;
+                          border-radius: 30px 30px 0 0;
+                          z-index: 10;
+                        "
+                      ></div>
+                      <div
+                        id="stack-dao"
+                        title="道家"
+                        style="
+                          height: 40%;
+                          background: linear-gradient(
+                            to top,
+                            #5a9e6e,
+                            #70ea92,
+                            #8ef5a8
+                          );
+                          cursor: pointer;
+                          transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+                          position: relative;
+                        "
+                      >
+                        <div
+                          style="
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            height: 50%;
+                            background: linear-gradient(
+                              to bottom,
+                              rgba(255, 255, 255, 0.25) 0%,
+                              transparent 100%
+                            );
+                          "
+                        ></div>
+                      </div>
+                      <div
+                        id="stack-fo"
+                        title="佛家"
+                        style="
+                          height: 30%;
+                          background: linear-gradient(
+                            to top,
+                            #3a6d8f,
+                            #5491b9,
+                            #6ba3c9
+                          );
+                          cursor: pointer;
+                          transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+                          position: relative;
+                        "
+                      >
+                        <div
+                          style="
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            height: 50%;
+                            background: linear-gradient(
+                              to bottom,
+                              rgba(255, 255, 255, 0.25) 0%,
+                              transparent 100%
+                            );
+                          "
+                        ></div>
+                      </div>
+                      <div
+                        id="stack-ru"
+                        title="儒家"
+                        style="
+                          height: 30%;
+                          background: linear-gradient(
+                            to top,
+                            #7a8299,
+                            #969eb3,
+                            #a8b0c5
+                          );
+                          cursor: pointer;
+                          transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+                          position: relative;
+                        "
+                      >
+                        <div
+                          style="
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            height: 50%;
+                            background: linear-gradient(
+                              to bottom,
+                              rgba(255, 255, 255, 0.25) 0%,
+                              transparent 100%
+                            );
+                          "
+                        ></div>
+                      </div>
+                    </div>
+                    <span
+                      style="
+                        color: var(--primary-color);
+                        font-weight: 600;
+                        font-size: 12px;
+                        letter-spacing: 2px;
+                      "
+                      >占比</span
+                    >
+                  </div>
+
+                  <!-- 折线图 -->
+                  <div style="flex: 1">
+                    <div
+                      id="influence-line-chart"
+                      style="width: 100%; height: 300px"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 右侧：时期理念详细信息 -->
+              <div
+                style="
+                  width: 420px;
+                  padding-left: 30px;
+                  border-left: 2px solid rgba(45, 106, 79, 0.15);
+                  margin-top: -60px;
+                "
+              >
+                <div id="period-detail-panel">
+                  <h4
+                    style="
+                      color: var(--primary-dark);
+                      margin-bottom: 18px;
+                      font-size: 17px;
+                      font-weight: 600;
+                      letter-spacing: 1px;
+                    "
+                  >
+                    <span
+                      style="
+                        border-left: 4px solid var(--primary-light);
+                        padding-left: 12px;
+                      "
+                      >时期理念详解</span
+                    >
+                  </h4>
+                  <div
+                    id="period-detail-content"
+                    style="
+                      max-height: 350px;
+                      overflow-y: auto;
+                      padding-right: 10px;
+                    "
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 园林哲学思想对比分析 -->
+        <div class="module-card">
+          <div class="module-title">园林哲学思想对比分析</div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 30px;
+              padding: 30px;
+            "
+          >
+            <!-- 儒家 - 颐和园 -->
+            <div
+              class="garden-analysis-section"
+              style="
+                padding: 30px;
+                border: 1px solid rgba(201, 168, 118, 0.25);
+                border-radius: 20px;
+                background: linear-gradient(
+                  135deg,
+                  rgba(255, 255, 255, 0.9) 0%,
+                  rgba(255, 255, 255, 0.7) 100%
+                );
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+                position: relative;
+                overflow: hidden;
+              "
+            >
+              <div
+                style="
+                  position: absolute;
+                  top: -50px;
+                  right: -50px;
+                  width: 150px;
+                  height: 150px;
+                  background: radial-gradient(
+                    circle,
+                    rgba(201, 168, 118, 0.08) 0%,
+                    transparent 70%
+                  );
+                  border-radius: 50%;
+                "
+              ></div>
+              <div style="position: relative; z-index: 1">
+                <div style="text-align: center; margin-bottom: 25px">
+                  <h3
+                    style="
+                      color: #c9a876;
+                      font-size: 1.5rem;
+                      font-weight: 700;
+                      margin-bottom: 8px;
+                      letter-spacing: 1px;
+                    "
+                  >
+                    儒家思想
+                  </h3>
+                  <p style="font-size: 0.85rem; color: #6b7280; margin: 0">
+                    代表园林：颐和园
+                  </p>
+                </div>
+                <p
+                  style="
+                    font-size: 0.88rem;
+                    color: #4b5563;
+                    line-height: 1.8;
+                    margin-bottom: 25px;
+                    text-align: justify;
+                  "
+                >
+                  作为皇家园林的代表，其轴线布局与石舫等景点深刻体现了"礼"的规范与"水能载舟亦能覆舟"的君子省思。
+                </p>
+                <div
+                  id="radar-ru"
+                  style="width: 100%; height: 280px; margin-bottom: 20px"
+                ></div>
+                <div class="radar-dimension-legend" data-theme="ru">
+                  <div class="dimension-item" data-index="0" data-value="95">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #c9a876"
+                      ></span>
+                      <span class="dimension-text">礼制秩序</span>
+                    </div>
+                    <span class="dimension-score" style="color: #c9a876"
+                      >95</span
+                    >
+                  </div>
+                  <div class="dimension-item" data-index="1" data-value="90">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #c9a876"
+                      ></span>
+                      <span class="dimension-text">山水比德</span>
+                    </div>
+                    <span class="dimension-score" style="color: #c9a876"
+                      >90</span
+                    >
+                  </div>
+                  <div class="dimension-item" data-index="2" data-value="40">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #d1d5db"
+                      ></span>
+                      <span class="dimension-text">道法自然</span>
+                    </div>
+                    <span class="dimension-score" style="color: #9ca3af"
+                      >40</span
+                    >
+                  </div>
+                  <div class="dimension-item" data-index="3" data-value="30">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #d1d5db"
+                      ></span>
+                      <span class="dimension-text">隐逸逍遥</span>
+                    </div>
+                    <span class="dimension-score" style="color: #9ca3af"
+                      >30</span
+                    >
+                  </div>
+                  <div class="dimension-item" data-index="4" data-value="20">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #d1d5db"
+                      ></span>
+                      <span class="dimension-text">禅宗意境</span>
+                    </div>
+                    <span class="dimension-score" style="color: #9ca3af"
+                      >20</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 道家 - 拙政园 -->
+            <div
+              class="garden-analysis-section"
+              style="
+                padding: 30px;
+                border: 1px solid rgba(94, 193, 149, 0.25);
+                border-radius: 20px;
+                background: linear-gradient(
+                  135deg,
+                  rgba(255, 255, 255, 0.9) 0%,
+                  rgba(255, 255, 255, 0.7) 100%
+                );
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+                position: relative;
+                overflow: hidden;
+              "
+            >
+              <div
+                style="
+                  position: absolute;
+                  top: -50px;
+                  right: -50px;
+                  width: 150px;
+                  height: 150px;
+                  background: radial-gradient(
+                    circle,
+                    rgba(94, 193, 149, 0.08) 0%,
+                    transparent 70%
+                  );
+                  border-radius: 50%;
+                "
+              ></div>
+              <div style="position: relative; z-index: 1">
+                <div style="text-align: center; margin-bottom: 25px">
+                  <h3
+                    style="
+                      color: #5ec195;
+                      font-size: 1.5rem;
+                      font-weight: 700;
+                      margin-bottom: 8px;
+                      letter-spacing: 1px;
+                    "
+                  >
+                    道家思想
+                  </h3>
+                  <p style="font-size: 0.85rem; color: #6b7280; margin: 0">
+                    代表园林：拙政园
+                  </p>
+                </div>
+                <p
+                  style="
+                    font-size: 0.88rem;
+                    color: #4b5563;
+                    line-height: 1.8;
+                    margin-bottom: 25px;
+                    text-align: justify;
+                  "
+                >
+                  江南私家园林典范，追求自然之美与隐逸逍遥，体现了"道法自然"与"天人合一"的哲学境界。
+                </p>
+                <div
+                  id="radar-dao"
+                  style="width: 100%; height: 280px; margin-bottom: 20px"
+                ></div>
+                <div class="radar-dimension-legend" data-theme="dao">
+                  <div class="dimension-item" data-index="0" data-value="30">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #d1d5db"
+                      ></span>
+                      <span class="dimension-text">礼制秩序</span>
+                    </div>
+                    <span class="dimension-score" style="color: #9ca3af"
+                      >30</span
+                    >
+                  </div>
+                  <div class="dimension-item" data-index="1" data-value="60">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #d1d5db"
+                      ></span>
+                      <span class="dimension-text">山水比德</span>
+                    </div>
+                    <span class="dimension-score" style="color: #d1d5db"
+                      >60</span
+                    >
+                  </div>
+                  <div class="dimension-item" data-index="2" data-value="95">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #5ec195"
+                      ></span>
+                      <span class="dimension-text">道法自然</span>
+                    </div>
+                    <span class="dimension-score" style="color: #5ec195"
+                      >95</span
+                    >
+                  </div>
+                  <div class="dimension-item" data-index="3" data-value="90">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #5ec195"
+                      ></span>
+                      <span class="dimension-text">隐逸逍遥</span>
+                    </div>
+                    <span class="dimension-score" style="color: #5ec195"
+                      >90</span
+                    >
+                  </div>
+                  <div class="dimension-item" data-index="4" data-value="50">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #d1d5db"
+                      ></span>
+                      <span class="dimension-text">禅宗意境</span>
+                    </div>
+                    <span class="dimension-score" style="color: #d1d5db"
+                      >50</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 佛家 - 狮子林 -->
+            <div
+              class="garden-analysis-section"
+              style="
+                padding: 30px;
+                border: 1px solid rgba(132, 204, 22, 0.25);
+                border-radius: 20px;
+                background: linear-gradient(
+                  135deg,
+                  rgba(255, 255, 255, 0.9) 0%,
+                  rgba(255, 255, 255, 0.7) 100%
+                );
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+                position: relative;
+                overflow: hidden;
+              "
+            >
+              <div
+                style="
+                  position: absolute;
+                  top: -50px;
+                  right: -50px;
+                  width: 150px;
+                  height: 150px;
+                  background: radial-gradient(
+                    circle,
+                    rgba(132, 204, 22, 0.08) 0%,
+                    transparent 70%
+                  );
+                  border-radius: 50%;
+                "
+              ></div>
+              <div style="position: relative; z-index: 1">
+                <div style="text-align: center; margin-bottom: 25px">
+                  <h3
+                    style="
+                      color: #84cc16;
+                      font-size: 1.5rem;
+                      font-weight: 700;
+                      margin-bottom: 8px;
+                      letter-spacing: 1px;
+                    "
+                  >
+                    佛家思想
+                  </h3>
+                  <p style="font-size: 0.85rem; color: #6b7280; margin: 0">
+                    代表园林：狮子林
+                  </p>
+                </div>
+                <p
+                  style="
+                    font-size: 0.88rem;
+                    color: #4b5563;
+                    line-height: 1.8;
+                    margin-bottom: 25px;
+                    text-align: justify;
+                  "
+                >
+                  以石假山为特色，融合了禅宗意境，石林景观暗含禅机，体现了佛家空灵超脱的精神追求。
+                </p>
+                <div
+                  id="radar-fo"
+                  style="width: 100%; height: 280px; margin-bottom: 20px"
+                ></div>
+                <div class="radar-dimension-legend" data-theme="fo">
+                  <div class="dimension-item" data-index="0" data-value="40">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #d1d5db"
+                      ></span>
+                      <span class="dimension-text">礼制秩序</span>
+                    </div>
+                    <span class="dimension-score" style="color: #9ca3af"
+                      >40</span
+                    >
+                  </div>
+                  <div class="dimension-item" data-index="1" data-value="50">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #d1d5db"
+                      ></span>
+                      <span class="dimension-text">山水比德</span>
+                    </div>
+                    <span class="dimension-score" style="color: #d1d5db"
+                      >50</span
+                    >
+                  </div>
+                  <div class="dimension-item" data-index="2" data-value="60">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #d1d5db"
+                      ></span>
+                      <span class="dimension-text">道法自然</span>
+                    </div>
+                    <span class="dimension-score" style="color: #d1d5db"
+                      >60</span
+                    >
+                  </div>
+                  <div class="dimension-item" data-index="3" data-value="70">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #84cc16"
+                      ></span>
+                      <span class="dimension-text">隐逸逍遥</span>
+                    </div>
+                    <span class="dimension-score" style="color: #84cc16"
+                      >70</span
+                    >
+                  </div>
+                  <div class="dimension-item" data-index="4" data-value="95">
+                    <div class="dimension-label">
+                      <span
+                        class="dimension-dot"
+                        style="background: #84cc16"
+                      ></span>
+                      <span class="dimension-text">禅宗意境</span>
+                    </div>
+                    <span class="dimension-score" style="color: #84cc16"
+                      >95</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. 造园哲学：天人合一与咫尺山林 -->
+        <div class="module-card">
+          <div class="module-title">造园哲学：天人合一与咫尺山林</div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+              gap: 20px;
+            "
+          >
+            <div
+              class="philosophy-item"
+              style="
+                padding: 20px;
+                background: rgba(139, 58, 58, 0.05);
+                border-radius: 12px;
+                border-left: 5px solid var(--emphasis);
+              "
+            >
+              <h4 style="color: var(--title-color); margin-bottom: 10px">
+                <i class="fa-solid fa-yin-yang"></i> 天人合一
+              </h4>
+              <p
+                style="
+                  font-size: 14px;
+                  line-height: 1.8;
+                  color: var(--body-text);
+                "
+              >
+                中国园林不追求几何对称，而是模仿自然，使人工建筑与自然环境融为一体。园林不仅是游憩之所，更是文人追求与自然和谐共生的精神家园。
+              </p>
+            </div>
+            <div
+              class="philosophy-item"
+              style="
+                padding: 20px;
+                background: rgba(139, 58, 58, 0.05);
+                border-radius: 12px;
+                border-left: 5px solid var(--emphasis);
+              "
+            >
+              <h4 style="color: var(--title-color); margin-bottom: 10px">
+                <i class="fa-solid fa-mountain-sun"></i> 咫尺山林
+              </h4>
+              <p
+                style="
+                  font-size: 14px;
+                  line-height: 1.8;
+                  color: var(--body-text);
+                "
+              >
+                在有限的城市宅地内，通过巧妙的叠山理水、空间转换，营造出深山幽谷的意境。所谓“一拳代山，一勺代水”，体现了中国造园极高的艺术概括力。
+              </p>
+            </div>
+            <div
+              class="philosophy-item"
+              style="
+                padding: 20px;
+                background: rgba(139, 58, 58, 0.05);
+                border-radius: 12px;
+                border-left: 5px solid var(--emphasis);
+              "
+            >
+              <h4 style="color: var(--title-color); margin-bottom: 10px">
+                <i class="fa-solid fa-eye"></i> 步移景异
+              </h4>
+              <p
+                style="
+                  font-size: 14px;
+                  line-height: 1.8;
+                  color: var(--body-text);
+                "
+              >
+                通过回廊、漏窗、门洞的引导与遮挡，使游人在行走过程中看到的景色不断变换。每一处转角都是一幅新的画卷，每一扇窗户都是一个天然的镜框。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div id="modal">
+      <div class="modal-content">
+        <span class="modal-close" onclick="closeModal()"
+          ><i class="fa-solid fa-circle-xmark"></i
+        ></span>
+        <div class="result-title" id="m-title">营造结果</div>
+        <img id="m-img" src="" class="result-img" style="display: none" />
+        <div class="result-text" id="m-text"></div>
+        <div class="rating-section" style="display: none"></div>
+        <!-- 占位用 -->
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    <script>
+      // 页面加载时恢复夜游模式状态
+      if (typeof restoreNightMode === 'function') {
+        restoreNightMode();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        if (typeof echarts !== "undefined") {
+          // 通用的雷达图样式配置 - 移除所有维度标签
+          const commonRadarOption = {
+            radar: {
+              indicator: [
+                { name: "礼制秩序", max: 100 },
+                { name: "山水比德", max: 100 },
+                { name: "道法自然", max: 100 },
+                { name: "隐逸逍遥", max: 100 },
+                { name: "禅宗意境", max: 100 },
+              ],
+              shape: "circle",
+              splitNumber: 4,
+              axisName: {
+                show: true, // 改为 true，显示维度标签
+                color: "#2d6a4f",
+                fontSize: 10,
+                fontWeight: "bold",
+              },
+              splitLine: {
+                lineStyle: {
+                  color: "rgba(45, 106, 79, 0.08)",
+                  width: 1,
+                },
+              },
+              splitArea: {
+                areaStyle: {
+                  color: [
+                    "rgba(45, 106, 79, 0.02)",
+                    "rgba(45, 106, 79, 0.03)",
+                    "rgba(45, 106, 79, 0.04)",
+                    "rgba(45, 106, 79, 0.05)",
+                  ],
+                },
+              },
+              axisLine: {
+                lineStyle: {
+                  color: "rgba(45, 106, 79, 0.12)",
+                  width: 1.5,
+                },
+              },
+              radius: "75%",
+            },
+          };
+
+          // 1. 儒家 - 颐和园 (侧重礼制与比德)
+          const ruChart = echarts.init(document.getElementById("radar-ru"));
+          const ruData = [95, 90, 40, 30, 20];
+          ruChart.setOption({
+            backgroundColor: 'transparent',
+            ...commonRadarOption,
+            series: [
+              {
+                type: "radar",
+                data: [
+                  {
+                    value: ruData,
+                    name: "儒家思想体现",
+                    itemStyle: {
+                      color: "#c9a876",
+                      shadowColor: "rgba(201, 168, 118, 0.4)",
+                      shadowBlur: 10,
+                    },
+                    areaStyle: {
+                      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: "rgba(201, 168, 118, 0.3)" },
+                        { offset: 1, color: "rgba(201, 168, 118, 0.1)" },
+                      ]),
+                    },
+                    lineStyle: {
+                      color: "#c9a876",
+                      width: 3,
+                      shadowColor: "rgba(201, 168, 118, 0.5)",
+                      shadowBlur: 8,
+                    },
+                    symbol: "circle",
+                    symbolSize: 8,
+                    emphasis: {
+                      itemStyle: {
+                        shadowBlur: 20,
+                        shadowColor: "rgba(201, 168, 118, 0.8)",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          });
+
+          // 2. 道家 - 拙政园 (侧重自然与隐逸)
+          const daoChart = echarts.init(document.getElementById("radar-dao"));
+          const daoData = [30, 60, 95, 90, 50];
+          daoChart.setOption({
+            ...commonRadarOption,
+            series: [
+              {
+                type: "radar",
+                data: [
+                  {
+                    value: daoData,
+                    name: "道家思想体现",
+                    itemStyle: {
+                      color: "#5ec195",
+                      shadowColor: "rgba(94, 193, 149, 0.4)",
+                      shadowBlur: 10,
+                    },
+                    areaStyle: {
+                      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: "rgba(94, 193, 149, 0.3)" },
+                        { offset: 1, color: "rgba(94, 193, 149, 0.1)" },
+                      ]),
+                    },
+                    lineStyle: {
+                      color: "#5ec195",
+                      width: 3,
+                      shadowColor: "rgba(94, 193, 149, 0.5)",
+                      shadowBlur: 8,
+                    },
+                    symbol: "circle",
+                    symbolSize: 8,
+                    emphasis: {
+                      itemStyle: {
+                        shadowBlur: 20,
+                        shadowColor: "rgba(94, 193, 149, 0.8)",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          });
+
+          // 3. 佛家 - 狮子林 (侧重禅意与石林景观)
+          const foChart = echarts.init(document.getElementById("radar-fo"));
+          const foData = [40, 50, 60, 70, 95];
+          foChart.setOption({
+            ...commonRadarOption,
+            series: [
+              {
+                type: "radar",
+                data: [
+                  {
+                    value: foData,
+                    name: "佛家思想体现",
+                    itemStyle: {
+                      color: "#84cc16",
+                      shadowColor: "rgba(132, 204, 22, 0.4)",
+                      shadowBlur: 10,
+                    },
+                    areaStyle: {
+                      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: "rgba(132, 204, 22, 0.3)" },
+                        { offset: 1, color: "rgba(132, 204, 22, 0.1)" },
+                      ]),
+                    },
+                    lineStyle: {
+                      color: "#84cc16",
+                      width: 3,
+                      shadowColor: "rgba(132, 204, 22, 0.5)",
+                      shadowBlur: 8,
+                    },
+                    symbol: "circle",
+                    symbolSize: 8,
+                    emphasis: {
+                      itemStyle: {
+                        shadowBlur: 20,
+                        shadowColor: "rgba(132, 204, 22, 0.8)",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          });
+
+          // 响应式调整
+          window.addEventListener("resize", function () {
+            ruChart.resize();
+            daoChart.resize();
+            foChart.resize();
+          });
+
+          // 添加图例交互功能 - 优化版本
+          // 添加图例交互功能 - 优化版本，解决闪烁问题
+          // 完全重写的交互函数 - 无闪烁，使用高亮 API
+function initDimensionInteraction(chartInstance, baseColor, dataValues, containerSelector) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+
+    const items = container.querySelectorAll('.dimension-item');
+    const dimensionNames = ['礼制秩序', '山水比德', '道法自然', '隐逸逍遥', '禅宗意境'];
+
+    items.forEach((item, index) => {
+        // 鼠标悬停 - 使用 ECharts 高亮 API，不重绘
+        item.addEventListener('mouseenter', function() {
+            // 更新列表样式
+            items.forEach(li => {
+                li.classList.remove('active');
+                li.classList.add('dimmed');
+            });
+            this.classList.remove('dimmed');
+            this.classList.add('active');
+            
+            // 使用 dispatchAction 高亮雷达图上的点（不会重绘整个图表）
+            try {
+                // 高亮对应的数据点
+                chartInstance.dispatchAction({
+                    type: 'highlight',
+                    seriesIndex: 0,
+                    dataIndex: 0
+                });
+                
+                // 显示 tooltip 提示当前维度信息
+                chartInstance.dispatchAction({
+                    type: 'showTip',
+                    seriesIndex: 0,
+                    dataIndex: 0,
+                    position: 'top'
+                });
+            } catch(e) { console.log(e); }
+            
+            // 添加一个简洁的浮动提示，显示当前维度信息
+            const existingHint = document.querySelector(`.dimension-hint-${containerSelector.replace(/[^a-zA-Z]/g, '')}`);
+            if (existingHint) existingHint.remove();
+            
+            const rect = this.getBoundingClientRect();
+            const hint = document.createElement('div');
+            hint.className = `dimension-hint-${containerSelector.replace(/[^a-zA-Z]/g, '')}`;
+            hint.style.cssText = `
+                position: fixed;
+                left: ${rect.right + 10}px;
+                top: ${rect.top + rect.height / 2 - 15}px;
+                background: ${baseColor};
+                color: white;
+                padding: 6px 14px;
+                border-radius: 25px;
+                font-size: 12px;
+                font-weight: bold;
+                z-index: 1000;
+                pointer-events: none;
+                white-space: nowrap;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+                animation: hintFadeIn 0.2s ease;
+            `;
+            hint.innerHTML = `📊 对应维度：${dimensionNames[index]} · 分值 ${dataValues[index]}`;
+            document.body.appendChild(hint);
+        });
+
+        // 鼠标离开 - 取消高亮，移除提示
+        item.addEventListener('mouseleave', function() {
+            items.forEach(li => {
+                li.classList.remove('active', 'dimmed');
+            });
+            
+            // 取消高亮
+            try {
+                chartInstance.dispatchAction({
+                    type: 'downplay',
+                    seriesIndex: 0,
+                    dataIndex: 0
+                });
+                chartInstance.dispatchAction({
+                    type: 'hideTip',
+                    seriesIndex: 0
+                });
+            } catch(e) {}
+            
+            // 移除浮动提示
+            const hint = document.querySelector(`.dimension-hint-${containerSelector.replace(/[^a-zA-Z]/g, '')}`);
+            if (hint) hint.remove();
+        });
+    });
+    
+    // 鼠标离开整个区域时清除所有效果
+    container.addEventListener('mouseleave', function() {
+        items.forEach(li => {
+            li.classList.remove('active', 'dimmed');
+        });
+        try {
+            chartInstance.dispatchAction({ type: 'downplay', seriesIndex: 0 });
+        } catch(e) {}
+        const hint = document.querySelector(`.dimension-hint-${containerSelector.replace(/[^a-zA-Z]/g, '')}`);
+        if (hint) hint.remove();
+    });
+}
+
+          // 初始化三个雷达图的维度交互
+          initDimensionInteraction(
+            ruChart,
+            "#c9a876",
+            ruData,
+            ".garden-analysis-section:nth-child(1) .radar-dimension-legend",
+          );
+
+          initDimensionInteraction(
+            daoChart,
+            "#5ec195",
+            daoData,
+            ".garden-analysis-section:nth-child(2) .radar-dimension-legend",
+          );
+
+          initDimensionInteraction(
+            foChart,
+            "#84cc16",
+            foData,
+            ".garden-analysis-section:nth-child(3) .radar-dimension-legend",
+          );
+
+          // 初始化影响力演变折线图
+          const influenceChartDom = document.getElementById(
+            "influence-line-chart",
+          );
+          if (influenceChartDom) {
+            const influenceChart = echarts.init(influenceChartDom);
+
+            // 时期数据 - 包含详细的时代理念、园林理念和代表作
+            const periodData = {
+              魏晋: {
+                title: "魏晋时期（道家主导）",
+                eraIdea:
+                  "崇尚老庄玄学哲学，彻底挣脱汉代儒家礼教世俗束缚，追求精神绝对自由与超脱本心。倡导避世归隐、逍遥出世、顺乎自然、淡泊无为，以山水自然安放内心情志，信奉天人合一、物我两忘处世哲学，反对功利世俗与严苛礼教约束，主张回归自然本心、体悟天地大道，在山林自然中寻求精神解脱与生命本真，形成超然洒脱、隐逸淡泊、寄情山水、清谈玄理的时代精神内核。",
+                gardenIdea:
+                  "以道家自然玄学为根本内核，主张人工造景完全顺应自然山水肌理，不刻意雕琢、不强行规整，追求隐于山林、野趣天成的隐逸意境。崇尚简约质朴、清幽静谧空间氛围，建筑融于山林草木之间，摒弃华丽繁复装饰，注重精神意境营造，将出世隐逸、超然淡泊人生理想寄托于园林山水。",
+                works: "兰亭、金谷园",
+                proportion: { ru: 30, fo: 30, dao: 40 },
+              },
+              隋唐: {
+                title: "隋唐时期（佛家鼎盛巅峰）",
+                eraIdea:
+                  "佛家禅学思想达历史鼎盛巅峰，核心主张禅意空灵、清净寂灭、静心悟道、明心见性、出世超脱，讲求内心修行、看破尘世、万物皆空禅理智慧；同时道家回归自然闲适、逍遥山水传统内核；儒家稳步复兴，秉持中庸和谐、礼制有序、家国正统、恢弘大气、尊卑有度礼教理念，形成佛禅出世、道家自然、儒家入世三者交融格局，既有盛世恢弘气度，又有禅意静心内在追求。",
+                gardenIdea:
+                  "融合佛道儒三家思想，皇家园林秉持儒家礼制正统，营造恢弘壮阔、庄严有序盛世格局；私家园林深度融入佛禅禅意，打造空灵静谧、幽深雅致禅意山水意境；寺观园林全面兴起，将禅理修行与自然山水完美结合，做到山水融禅、移步悟心、景境合一。",
+                works: "华清宫、辋川别业、隋唐御苑",
+                proportion: { ru: 40, fo: 35, dao: 25 },
+              },
+              两宋: {
+                title: "两宋时期（道家复兴+儒家理学崛起）",
+                eraIdea:
+                  "儒家程朱理学全面兴盛，核心秉持格物致知、修身养性、内敛中庸、明理守序、清雅克制核心理念，讲求内省修身、秩序规整、文人风骨与道德自省；道家山水美学全面复兴回归，坚守天人合一、自然写意、诗情画意、顺乎天地、雅致淡泊精神内核；佛家持续衰落，仅留存简约清净内敛禅意余韵。整体形成内敛深沉、雅致温润、重意境轻浮华、重内省轻外放的时代气质。",
+                gardenIdea:
+                  "文人写意园林全面成熟巅峰，彻底摒弃隋唐宏大华丽，转向精致内敛、小中见大、诗情画意文人审美。深度融合儒家理学秩序与道家自然山水意境，造园讲究含蓄悠远、移步换景、意境营造，方寸之间造万千气象，将文人内敛清雅、淡泊高远精神追求融入园林造景。",
+                works: "沧浪亭、宋代文人私园",
+                proportion: { ru: 45, fo: 25, dao: 30 },
+              },
+              明代: {
+                title: "明代时期（道家写意巅峰）",
+                eraIdea:
+                  "道家自然山水美学抵达历史巅峰，核心奉行虽由人作，宛自天开最高准则，主张人工创造完全师法自然、顺应自然、融于自然，追求意境悠远、空灵雅致、文人风骨、自然本真，反对人工刻意雕琢；儒家礼教稳定高位，坚守文人雅趣、中庸守序、正统风骨、道德修养内核；佛家持续低迷衰落，仅存隐逸禅意微弱余韵。整体形成崇尚自然写意、追求诗意意境、彰显文人审美的核心精神。",
+                gardenIdea:
+                  "古典园林造园理论完全成熟定型，以道家自然写意为绝对核心，完善借景、框景、漏景、移步换景等全套造园技法。造园极致追求诗情画意、自然天成、意境悠远，人工建筑与山水草木完全融为一体，师法自然而高于自然，是江南文人写意园林黄金鼎盛时代，诠释诗意栖居终极追求。",
+                works: "拙政园、留园、网师园",
+                proportion: { ru: 50, fo: 20, dao: 30 },
+              },
+              清代: {
+                title: "清代时期（儒家礼制正统巅峰）",
+                eraIdea:
+                  "儒家皇家礼制思想达历史最高巅峰，核心坚守皇家等级礼制、恢弘正统、尊卑有序、秩序森严、家国一统恢弘大气核心理念，强调等级规范、礼制秩序与王朝气度；道家自然山水美学高位回落，依旧延续文人雅致、自然闲适、意境悠远传统内核；佛家降至历史最低谷，仅存微弱隐逸禅意余韵。整体形成皇家礼制恢弘正统与文人自然雅致交融并存的集大成思想格局。",
+                gardenIdea:
+                  "古典园林集历代造园大成，皇家园林严格遵循儒家礼制等级，营造恢弘壮阔、庄严有序皇家御苑格局，彰显王朝正统气度；江南私家园林完整延续明代文人写意意境，坚守自然山水诗情画意内核。实现儒家礼制秩序与道家自然山水完美融合，是传统园林收官集大成时代。",
+                works: "颐和园、个园、寄畅园",
+                proportion: { ru: 55, fo: 15, dao: 30 },
+              },
+            };
+
+            const influenceOption = {
+              backgroundColor: "transparent",
+              tooltip: {
+                trigger: "item",
+                backgroundColor: "rgba(45, 106, 79, 0.95)",
+                borderColor: "#70ea92",
+                borderWidth: 1,
+                textStyle: { color: "#fff", fontSize: 13 },
+                axisPointer: {
+                  type: "cross",
+                  crossStyle: { color: "#70ea92" },
+                  lineStyle: { color: "#70ea92", type: "dashed" },
+                },
+                formatter: function (params) {
+                  if (!params) return "";
+                  const period = params.name;
+                  const data = periodData[period];
+                  if (!data) return "";
+
+                  let result = `<div style="font-weight: bold; margin-bottom: 8px; font-size: 15px;">📍 ${period}时期</div>`;
+                  result += `<div style="margin-bottom: 6px;">📜 代表作：${data.works}</div>`;
+
+                  return result;
+                },
+              },
+              legend: {
+                data: ["儒家", "佛家", "道家"],
+                top: 0,
+                textStyle: {
+                  color: "var(--primary-dark)",
+                  fontSize: 13,
+                  fontWeight: 500,
+                },
+                icon: "circle",
+                itemWidth: 10,
+                itemHeight: 10,
+                itemGap: 30,
+              },
+              grid: {
+                left: "3%",
+                right: "4%",
+                bottom: "10%",
+                top: "50px",
+                containLabel: true,
+              },
+              xAxis: {
+                type: "category",
+                boundaryGap: false,
+                data: ["魏晋", "隋唐", "两宋", "明代", "清代"],
+                axisLine: { lineStyle: { color: "rgba(45, 106, 79, 0.2)" } },
+                axisLabel: {
+                  color: "var(--primary-color)",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  margin: 15,
+                },
+                axisTick: { show: false },
+              },
+              yAxis: {
+                type: "value",
+                name: "影响力",
+                show: false,
+                max: 100,
+              },
+              series: [
+                {
+                  name: "儒家",
+                  type: "line",
+                  smooth: false,
+                  data: [30, 60, 85, 90, 95],
+                  lineStyle: {
+                    color: "rgba(150, 158, 179, 0.8)",
+                    width: 3,
+                  },
+                  areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                      { offset: 0, color: "rgba(150, 158, 179, 0.12)" },
+                      { offset: 1, color: "rgba(150, 158, 179, 0.02)" },
+                    ]),
+                  },
+                  showSymbol: true,
+                  symbol: "circle",
+                  symbolSize: 8,
+                  itemStyle: {
+                    color: "#969eb3",
+                    borderColor: "#fff",
+                    borderWidth: 2,
+                  },
+                  emphasis: {
+                    scale: true,
+                    symbolSize: 12,
+                    itemStyle: {
+                      shadowColor: "rgba(150, 158, 179, 0.6)",
+                      shadowBlur: 15,
+                    },
+                  },
+                },
+                {
+                  name: "佛家",
+                  type: "line",
+                  smooth: false,
+                  data: [70, 90, 60, 40, 30],
+                  lineStyle: {
+                    color: "rgba(84, 145, 185, 0.8)",
+                    width: 3,
+                  },
+                  areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                      { offset: 0, color: "rgba(84, 145, 185, 0.12)" },
+                      { offset: 1, color: "rgba(84, 145, 185, 0.02)" },
+                    ]),
+                  },
+                  showSymbol: true,
+                  symbol: "circle",
+                  symbolSize: 8,
+                  itemStyle: {
+                    color: "#5491b9",
+                    borderColor: "#fff",
+                    borderWidth: 2,
+                  },
+                  emphasis: {
+                    scale: true,
+                    symbolSize: 12,
+                    itemStyle: {
+                      shadowColor: "rgba(84, 145, 185, 0.6)",
+                      shadowBlur: 15,
+                    },
+                  },
+                },
+                {
+                  name: "道家",
+                  type: "line",
+                  smooth: false,
+                  data: [80, 70, 90, 95, 80],
+                  lineStyle: {
+                    color: "rgba(112, 234, 146, 0.8)",
+                    width: 3,
+                  },
+                  areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                      { offset: 0, color: "rgba(112, 234, 146, 0.12)" },
+                      { offset: 1, color: "rgba(112, 234, 146, 0.02)" },
+                    ]),
+                  },
+                  showSymbol: true,
+                  symbol: "circle",
+                  symbolSize: 8,
+                  itemStyle: {
+                    color: "#70ea92",
+                    borderColor: "#fff",
+                    borderWidth: 2,
+                  },
+                  emphasis: {
+                    scale: true,
+                    symbolSize: 12,
+                    itemStyle: {
+                      shadowColor: "rgba(112, 234, 146, 0.6)",
+                      shadowBlur: 15,
+                    },
+                  },
+                },
+              ],
+            };
+            influenceChart.setOption(influenceOption);
+
+            // 渲染右侧时期详情面板
+            function renderPeriodDetail(period) {
+              const data = periodData[period];
+              if (!data) return;
+
+              const contentDiv = document.getElementById(
+                "period-detail-content",
+              );
+              if (!contentDiv) return;
+
+              contentDiv.innerHTML = `
+                        <div style="margin-bottom: 20px;">
+                            <h5 style="color: var(--primary-dark); font-size: 16px; font-weight: 600; margin-bottom: 12px; letter-spacing: 0.5px;">
+                                <i class="fa-solid fa-clock" style="margin-right: 8px; color: var(--primary-light);"></i>${data.title}
+                            </h5>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <h6 style="color: var(--primary-light); font-size: 14px; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.3px;">
+                                    🎯 时代理念
+                                </h6>
+                                <p style="font-size: 13px; line-height: 2; color: var(--body-text); text-align: justify; margin: 0;">
+                                    ${data.eraIdea}
+                                </p>
+                            </div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <h6 style="color: var(--primary-light); font-size: 14px; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.3px;">
+                                    🏛️ 园林理念
+                                </h6>
+                                <p style="font-size: 13px; line-height: 2; color: var(--body-text); text-align: justify; margin: 0;">
+                                    ${data.gardenIdea}
+                                </p>
+                            </div>
+                            
+                            <div style="background: rgba(45, 106, 79, 0.06); padding: 12px 15px; border-radius: 8px; border-left: 3px solid var(--primary-light);">
+                                <h6 style="color: var(--primary-light); font-size: 14px; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.3px;">
+                                    📜 代表作品
+                                </h6>
+                                <p style="font-size: 13px; line-height: 1.8; color: var(--body-text); margin: 0;">
+                                    ${data.works}
+                                </p>
+                            </div>
+                        </div>
+                    `;
+            }
+
+            // 占比柱动画更新函数
+            function updateStackBar(period) {
+              const data = periodData[period];
+              if (!data) return;
+              const props = data.proportion;
+
+              const ruBar = document.getElementById("stack-ru");
+              const foBar = document.getElementById("stack-fo");
+              const daoBar = document.getElementById("stack-dao");
+
+              if (ruBar && foBar && daoBar) {
+                ruBar.style.height = props.ru + "%";
+                foBar.style.height = props.fo + "%";
+                daoBar.style.height = props.dao + "%";
+              }
+            }
+
+            // 初始化显示魏晋时期
+            renderPeriodDetail("魏晋");
+            updateStackBar("魏晋");
+
+            // 监听鼠标悬停 - 实现占比柱和右侧详情动态联动
+            let currentHoverPeriod = null;
+            influenceChart.on("mouseover", function (params) {
+              if (params.componentType === "series" && params.seriesName) {
+                const period = params.name;
+                if (period && period !== currentHoverPeriod) {
+                  currentHoverPeriod = period;
+                  updateStackBar(period);
+                  renderPeriodDetail(period);
+                }
+              }
+            });
+
+            // 监听鼠标离开图表区域
+            influenceChart.on("globalout", function () {
+              currentHoverPeriod = null;
+            });
+
+            // 监听点击节点
+            influenceChart.on("click", function (params) {
+              if (params.componentType === "series" && params.name) {
+                const period = params.name;
+                currentHoverPeriod = period;
+                updateStackBar(period);
+                renderPeriodDetail(period);
+              }
+            });
+
+            // 响应式调整
+            window.addEventListener("resize", function () {
+              influenceChart.resize();
+            });
+          }
+        }
+      });
+    </script>
+    <!-- AI 智能体 SDK -->
+    <script>
+      
+    </script>
+  </body>
+</html>

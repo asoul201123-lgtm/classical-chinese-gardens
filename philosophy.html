@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人物与著作 - 中国古代园林</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="vendor/echarts.min.js"></script>
+    <script src="asset-manifest.js"></script>
+    <script src="runtime.js"></script>
+</head>
+<body onload="initPage('philosophy')">
+
+<canvas id="ink-canvas"></canvas>
+
+<button class="theme-toggle" onclick="toggleNightMode()">
+    <i class="fa-solid fa-moon"></i> 夜游园林
+</button>
+
+<nav>
+    <div class="nav-title" onclick="window.location.href='home.html'" style="cursor: pointer;" title="返回首页"><i class="fa-solid fa-leaf"></i> 中国古典园林科普系统</div>
+</nav>
+
+<div class="container">
+    <div class="tab-bar">
+        <div class="tab" onclick="window.location.href='gallery.html'"><i class="fa-solid fa-sitemap"></i> 历代风华</div>
+        <div class="tab" onclick="window.location.href='earth.html'"><i class="fa-solid fa-cubes"></i> 构造分类</div>
+        <div class="tab active" onclick="window.location.href='philosophy.html'"><i class="fa-solid fa-scroll"></i> 人物与著作</div>
+        <div class="tab" onclick="window.location.href='game.html'"><i class="fa-solid fa-hourglass-half"></i> 意象哲学</div>
+        <div class="tab" onclick="window.location.href='fun.html'"><i class="fa-solid fa-robot"></i> AI 智囊</div>
+    </div>
+
+    <!-- 人物与著作 内容 -->
+    <div class="panel show" id="main-tab-3">
+        <div class="module-card">
+            <div class="module-title">园林著作对古今建筑之影响</div>
+            <p style="text-align:center; font-size:14px; color:var(--sub-title);"><i class="fa-solid fa-circle-info"></i> 展示古典造园著作如何通过核心理念影响古代名园及现代景观设计</p>
+            <div id="sankey-chart" style="width: 100%; height: 72vh; min-height: 640px; margin-top: 20px;"></div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-title">造园巨匠与文化名人</div>
+            <div class="figures-grid">
+                <!-- 原有人物卡片 1：计成 -->
+                <div class="figure-card">
+                    <img src="image/计成.png" class="f-img" alt="计成">
+                    <div class="f-quote">虽由人作，宛自天开</div>
+                    <div class="f-name">计成 <span class="figure-era">(明代造园宗师)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>著有世界首部系统造园专著《园冶》，提出“虽由人作，宛自天开”“巧于因借，精在体宜”。<br><b>风格：</b>以画意入造园，强调因地制宜。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('计成')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 原有人物卡片 2：张南垣 -->
+                <div class="figure-card">
+                    <img src="image/张南垣.png" class="f-img" alt="张南垣">
+                    <div class="f-quote">土石相间，浑然天成</div>
+                    <div class="f-name">张南垣 <span class="figure-era;">(明末清初叠山大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>改变传统“高架叠缀”风格，首创“土石相间、因形造势”的自然叠山法。<br><b>风格：</b>假山浑然若真山，意境苍茫。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('张南垣')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 原有人物卡片 3：戈裕良 -->
+                <div class="figure-card">
+                    <img src="image/戈裕良.png" class="f-img" alt="戈裕良">
+                    <div class="f-quote">不用铁活，数百年不散</div>
+                    <div class="f-name">戈裕良 <span class="figure-era;">(清代叠山巨匠)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>代表作苏州环秀山庄假山（独步江南）；首创“钩带法”叠石，不用铁活固定。<br><b>风格：</b>兼取气势与精雕，咫尺山林气象万千。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('戈裕良')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 原有人物卡片 4：文震亨 -->
+                <div class="figure-card">
+                    <img src="image/文震亨.png" class="f-img" alt="文震亨">
+                    <div class="f-quote">园灵之胜，全在乎雅</div>
+                    <div class="f-name">文震亨 <span class="figure-era;">(明代理论家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>著《长物志》，系统总结文人园林的审美标准与布置原则。<br><b>风格：</b>重雅致、忌俗艳，强调园林是修身养性的空间。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('文震亨')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 原有人物卡片 5：文徵明 -->
+                <div class="figure-card">
+                    <img src="image/文徽明.png" class="f-img" alt="文徵明">
+                    <div class="f-quote">笔墨意蕴，在山水间</div>
+                    <div class="f-name">文徵明 <span class="figure-era;">(吴门画派领袖)</span></div>
+                    <div class="f-desc"><b>核心关联：</b>参与拙政园早期规划，绘制《王氏拙政园图》。<br><b>影响：</b>其山水画笔意直接影响园中布局，奠定“诗画入园”基调。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('文徵明')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 原有人物卡片 6：李渔 -->
+                <div class="figure-card">
+                    <img src="image/李渔.png" class="f-img" alt="李渔">
+                    <div class="f-quote">便面窗中，别有天地</div>
+                    <div class="f-name">李渔 <span class="figure-era;">(戏曲家/美学家)</span></div>
+                    <div class="f-desc"><b>核心关联：</b>著《闲情偶寄》，对园林建筑有独到见解。自造金陵芥子园，设计“便面窗”等框景。<br><b>风格：</b>重实用与趣味。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('李渔')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 原有人物卡片 7：宋徽宗赵佶 -->
+                <div class="figure-card">
+                    <img src="image/宋徽宗赵信.png" class="f-img" alt="宋徽宗赵佶">
+                    <div class="f-quote">天下奇石，尽聚艮岳</div>
+                    <div class="f-name">宋徽宗赵佶 <span class="figure-era;">(北宋皇帝)</span></div>
+                    <div class="f-desc"><b>核心关联：</b>主持营造“艮岳”，集天下奇石名花于一园，将宫廷画院审美融入造园。<br><b>影响：</b>奠定了后世皇家园林范式。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('宋徽宗赵佶')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 原有人物卡片 8：陈从周 -->
+                <div class="figure-card">
+                    <img src="image/陈从周.png" class="f-img" alt="陈从周">
+                    <div class="f-quote">园以文传，诗画是魂</div>
+                    <div class="f-name">陈从周 <span class="figure-era;">(现代园林大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>著《说园》；主持修复网师园等；以殿春簃为蓝本设计纽约大都会博物馆“明轩”。<br><b>风格：</b>强调“园以文传”。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('陈从周')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 9：白居易 -->
+                <div class="figure-card">
+                    <img src="image/43.png" class="f-img" alt="白居易">
+                    <div class="f-quote">中隐于园，闲适自得</div>
+                    <div class="f-name">白居易 <span class="figure-era;">(唐代诗人/造园实践者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建洛阳履道里宅园，提出“中隐”园林美学思想，著《池上篇》记园居之乐。<br><b>风格：</b>简素自然，以水竹为核心，重精神栖居之趣。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('白居易')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 10：王维 -->
+                <div class="figure-card">
+                    <img src="image/42.png" class="f-img" alt="王维">
+                    <div class="f-quote">行到水穷处，坐看云起时</div>
+                    <div class="f-name">王维 <span class="figure-era;">(唐代诗人/辋川别业造园者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建蓝田辋川别业，将山水诗画意境融入园林布局，开创“诗画入园”先河。<br><b>风格：</b>空灵悠远，融禅意于山水，自然天成。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('王维')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 11：司马光 -->
+                <div class="figure-card">
+                    <img src="image/5.png" class="f-img" alt="司马光">
+                    <div class="f-quote">独乐园中，自得其乐</div>
+                    <div class="f-name">司马光 <span class="figure-era;">(北宋史学家/造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建洛阳独乐园，著《独乐园记》，园以“读书、著述”为核心功能。<br><b>风格：</b>简素淡雅，以草堂、书屋为主体，重文人治学之趣。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('司马光')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 12：苏轼 -->
+                <div class="figure-card">
+                    <img src="image/66.png" class="f-img" alt="苏轼">
+                    <div class="f-quote">宁可食无肉，不可居无竹</div>
+                    <div class="f-name">苏轼 <span class="figure-era;">(北宋文学家/园林营造者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>主持杭州西湖苏堤营造，营建黄州东坡雪堂，提出“竹石为友”的造园审美。<br><b>风格：</b>豪放洒脱，融诗情于山水，不拘一格。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('苏轼')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 13：米万钟 -->
+                <div class="figure-card">
+                    <img src="image/米万钟.jpg" class="f-img" alt="米万钟">
+                    <div class="f-quote">石不能言最可人</div>
+                    <div class="f-name">米万钟 <span class="figure-era;">(北宋书画家/赏石造园大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>开创文人赏石文化，营建襄阳米氏园，以奇石为核心造景，著《研山铭》记石之美。<br><b>风格：</b>尚奇好古，以石入园，追求天然野趣。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('米万钟')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 14：赵孟頫 -->
+                <div class="figure-card">
+                    <img src="image/10.png" class="f-img" alt="赵孟頫">
+                    <div class="f-quote">书画同源，园画一体</div>
+                    <div class="f-name">赵孟頫 <span class="figure-era;">(元代书画家/造园理论家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>将书画笔墨意趣融入园林布局，参与吴兴莲花庄营建，著《吴兴山水图》佐造园。<br><b>风格：</b>典雅精致，融书画章法于园景，层次分明。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('赵孟頫')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 15：倪瓒 -->
+                <div class="figure-card">
+                    <img src="image/12.png" class="f-img" alt="倪瓒">
+                    <div class="f-quote">一河两岸，疏淡空灵</div>
+                    <div class="f-name">倪瓒 <span class="figure-era;">(元代画家/极简造园代表)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建无锡清閟阁，开创极简主义造园风格，园景如“一水两岸”山水画。<br><b>风格：</b>疏淡萧散，以简驭繁，意境高远脱俗。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('倪瓒')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+
+                <!-- 新增人物卡片 17：王世贞 -->
+                <div class="figure-card">
+                    <img src="image/14.png" class="f-img" alt="王世贞">
+                    <div class="f-quote">弇山园中，文心雕龙</div>
+                    <div class="f-name">王世贞 <span class="figure-era;">(明代文学家/造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营太仓弇山园，著《弇山园记》，园藏万卷藏书，融学术研究与园居生活于一体。<br><b>风格：</b>宏大精致，亭台错落，重文化底蕴。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('王世贞')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <div style="text-align:right; width:100%; padding:10px 0;">
+                    <button onclick="toggleMore()" style="padding:10px 20px; background:#6d9c79; color:white; border:none; border-radius:6px; cursor:pointer; font-size:14px;" id="toggleBtn">
+                        查看更多园林名人
+                    </button>
+                </div>
+                <div id="moreFigures" style="display:none;">
+
+                    <!-- 新增人物卡片 18：归有光 -->
+                    <div class="figure-card">
+                        <img src="image/16.png" class="f-img" alt="归有光">
+                        <div class="f-quote">项脊轩中，情真意切</div>
+                        <div class="f-name">归有光 <span class="figure-era;">(明代散文家/园居文人)</span></div>
+                        <div class="f-desc"><b>核心成就：</b>居昆山项脊轩，著《项脊轩志》，以小轩为核心写园居之情，彰显“小中见大”造园哲思。<br><b>风格：</b>朴素真挚，以情赋园，细节见真章。</div>
+                        <button class="btn-masterpiece" onclick="showMasterpiece('归有光')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                    </div>
+                </div>
+                <!-- 新增人物卡片 19：董其昌 -->
+                <div class="figure-card">
+                    <img src="image/18.png" class="f-img" alt="董其昌">
+                    <div class="f-quote">南北宗论，画意入园</div>
+                    <div class="f-name">董其昌 <span class="figure-era;">(明代书画家/造园审美理论家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>提出山水画“南北宗”理论，指导松江董氏园营建，以“南宗”清逸画风入造园。<br><b>风格：</b>淡雅清逸，意境深远，重笔墨韵味。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('董其昌')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 20：陈继儒 -->
+                <div class="figure-card">
+                    <img src="image/20.png" class="f-img" alt="陈继儒">
+                    <div class="f-quote">小昆山中，隐逸清修</div>
+                    <div class="f-name">陈继儒 <span class="figure-era;">(明代隐士/造园理论家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>隐居松江小昆山，营建顽仙庐，著《小窗幽记》总结园居修身之道。<br><b>风格：</b>隐逸淡泊，园景简约，重精神清修。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('陈继儒')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 21：张岱 -->
+                <div class="figure-card">
+                    <img src="image/22.png" class="f-img" alt="张岱">
+                    <div class="f-quote">湖心亭中，看雪听雨</div>
+                    <div class="f-name">张岱 <span class="figure-era;">(明末文学家/园居美学大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营绍兴快园，著《陶庵梦忆》记江南名园之美，推崇“精致生活”的园居美学。<br><b>风格：</b>考究雅致，融生活美学于园景，处处见巧思。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('张岱')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 22：祁彪佳 -->
+                <div class="figure-card">
+                    <img src="image/24.png" class="f-img" alt="祁彪佳">
+                    <div class="f-quote">寓园之中，气节长存</div>
+                    <div class="f-name">祁彪佳 <span class="figure-era;">(明末政治家/造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营绍兴寓园，著《越中园亭记》梳理江南园林脉络，园景彰显文人气节。<br><b>风格：</b>清雅高洁，布局方正，园如其人刚正不阿。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('祁彪佳')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 23：袁枚 -->
+                <div class="figure-card">
+                    <img src="image/26.png" class="f-img" alt="袁枚">
+                    <div class="f-quote">随园之中，性灵自得</div>
+                    <div class="f-name">袁枚 <span class="figure-era;">(清代诗人/随园主人)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>购建南京随园，著《随园诗话》《随园食单》，将“性灵说”融入园居生活。<br><b>风格：</b>自然随性，不拘礼法，重生活本真之趣。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('袁枚')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 24：沈复 -->
+                <div class="figure-card">
+                    <img src="image/29.png" class="f-img" alt="沈复">
+                    <div class="f-quote">浮生若梦，园林寄情</div>
+                    <div class="f-name">沈复 <span class="figure-era;">(清代文学家/园居生活家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>著《浮生六记》，记沧浪亭等园居雅事，详述造园叠石、盆栽之巧。<br><b>风格：</b>细腻婉约，以园写情，意境悠远绵长。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('沈复')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 25：石涛 -->
+                <div class="figure-card">
+                    <img src="image/31.png" class="f-img" alt="石涛">
+                    <div class="f-quote">片石山房，画入叠山</div>
+                    <div class="f-name">石涛 <span class="figure-era;">(清代画僧/叠山宗师)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>设计扬州片石山房假山，以画理入叠山，著《苦瓜和尚画语录》阐发造园意境。<br><b>风格：</b>奇崛苍茫，咫尺山林，画意盎然。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('石涛')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 26：郑燮 -->
+                <div class="figure-card">
+                    <img src="image/33.png" class="f-img" alt="郑燮">
+                    <div class="f-quote">宁可食无肉，不可居无竹</div>
+                    <div class="f-name">郑燮 <span class="figure-era;">(清代书画家/竹石造园代表)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营扬州板桥园，以竹为核心造景，画竹咏竹融于园，彰显文人气节。<br><b>风格：</b>清瘦挺拔，以竹喻人，重品格风骨。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('郑燮')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 27：李斗 -->
+                <div class="figure-card">
+                    <img src="image/35.png" class="f-img" alt="李斗">
+                    <div class="f-quote">画舫录中，园亭盛景</div>
+                    <div class="f-name">李斗 <span class="figure-era;">(清代学者/园林文献家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>著《扬州画舫录》，详实记录清代扬州园林盛况，为造园史研究留存珍贵史料。<br><b>风格：</b>严谨详实，集园林文献之大成，重实证记录。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('李斗')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 28：钱泳 -->
+                <div class="figure-card">
+                    <img src="image/37.png" class="f-img" alt="钱泳">
+                    <div class="f-quote">履园丛话，造园精要</div>
+                    <div class="f-name">钱泳 <span class="figure-era;">(清代学者/造园理论家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>著《履园丛话》，系统总结造园、叠山、建筑技艺，梳理历代造园经验。<br><b>风格：</b>博古通今，理论与实践并重，重技艺传承。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('钱泳')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 29：姚承祖 -->
+                <div class="figure-card">
+                    <img src="image/39.png" class="f-img" alt="姚承祖">
+                    <div class="f-quote">营造法原，匠作典范</div>
+                    <div class="f-name">姚承祖 <span class="figure-era;">(清代工匠/香山帮代表)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>香山帮匠人宗师，著《营造法原》，系统总结江南园林建筑营造技艺。<br><b>风格：</b>技艺精湛，榫卯精密，传承江南匠作精髓。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('姚承祖')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 30：蒯祥 -->
+                <div class="figure-card">
+                    <img src="image/41.png" class="f-img" alt="蒯祥">
+                    <div class="f-quote">蒯鲁班手，巧夺天工</div>
+                    <div class="f-name">蒯祥 <span class="figure-era;">(明代工匠/皇家造园巨匠)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>香山帮鼻祖，主持紫禁城、西苑等皇家园林营建，榫卯技艺冠绝当世。<br><b>风格：</b>恢弘大气，精工细作，奠定皇家园林建筑范式。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('蒯祥')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 31：徐泰时 -->
+                <div class="figure-card">
+                    <img src="image/42.png" class="f-img" alt="徐泰时">
+                    <div class="f-quote">东园西园，留园之源</div>
+                    <div class="f-name">徐泰时 <span class="figure-era;">(明代官员/留园奠基者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建苏州东园（留园前身），融山水园林与宅第为一体，布局精巧多变。<br><b>风格：</b>疏密有致，山水相依，开留园造园之先河。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('徐泰时')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 32：王献臣 -->
+                <div class="figure-card">
+                    <img src="image/43.png" class="f-img" alt="王献臣">
+                    <div class="f-quote">拙政之初，归隐田园</div>
+                    <div class="f-name">王献臣 <span class="figure-era;">(明代官员/拙政园初建者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>罢官归里营建拙政园，取“拙者为政”之意，以水为核心造隐逸之境。<br><b>风格：</b>疏朗自然，亭台临水，尽显文人归隐理想。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('王献臣')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 33：刘恕 -->
+                <div class="figure-card">
+                    <img src="image/44.png" class="f-img" alt="刘恕">
+                    <div class="f-quote">寒碧山庄，留园之盛</div>
+                    <div class="f-name">刘恕 <span class="figure-era;">(清代官员/留园扩建者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>重修东园并改名寒碧山庄（留园），增植花木、叠山理水，丰富园景层次。<br><b>风格：</b>精巧雅致，建筑布局严谨，花木错落成趣。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('刘恕')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 34：盛宣怀 -->
+                <div class="figure-card">
+                    <img src="image/45.png" class="f-img" alt="盛宣怀">
+                    <div class="f-quote">留园再兴，中西合璧</div>
+                    <div class="f-name">盛宣怀 <span class="figure-era;">(清代实业家/留园修缮者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>购得留园并大规模修缮扩建，融入西方造园元素，拓展园林功能。<br><b>风格：</b>中西交融，传统形制与现代功能并重。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('盛宣怀')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 35：汪士元 -->
+                <div class="figure-card">
+                    <img src="image/48.png" class="f-img" alt="汪士元">
+                    <div class="f-quote">耦园之中，佳偶天成</div>
+                    <div class="f-name">汪士元 <span class="figure-era;">(清代官员/耦园修缮者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>修缮苏州耦园，取“佳偶天成”之意，完善东西对称的布局格局。<br><b>风格：</b>精巧对称，园景呼应，寓意夫妻和美。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('汪士元')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 36：宋宗元 -->
+                <div class="figure-card">
+                    <img src="image/宋宗元.jpg" class="f-img" alt="宋宗元">
+                    <div class="f-quote">网师初建，渔隐之趣</div>
+                    <div class="f-name">宋宗元 <span class="figure-era;">(清代官员/网师园初建者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建苏州网师园，取“渔隐”之意，以小园见大境，尽显江南水乡之趣。<br><b>风格：</b>小巧精致，以水为中心，小中见大意境深远。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('宋宗元')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 37：李鸿裔 -->
+                <div class="figure-card">
+                    <img src="image/李鸿裔.jpg" class="f-img" alt="李鸿裔">
+                    <div class="f-quote">苏邻小筑，文人雅居</div>
+                    <div class="f-name">李鸿裔 <span class="figure-era;">(清代官员/环秀山庄修缮者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>修缮苏州环秀山庄（苏邻小筑），保留戈裕良经典假山，优化园景布局。<br><b>风格：</b>以山为主，山水相映，假山独步江南。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('李鸿裔')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 38：潘世恩 -->
+                <div class="figure-card">
+                    <img src="image/潘世恩.jpg" class="f-img" alt="潘世恩">
+                    <div class="f-quote">留园之风，世家传承</div>
+                    <div class="f-name">潘世恩 <span class="figure-era;">(清代状元/留园文化传承者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>潘氏家族居留园期间，广邀文人雅集，传承园林文化，丰富园藏书画。<br><b>风格：</b>世家风范，文气浓郁，园林与书香相融。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('潘世恩')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 39：俞樾 -->
+                <div class="figure-card">
+                    <img src="image/俞樾.jpg" class="f-img" alt="俞樾">
+                    <div class="f-quote">曲园之中，春在堂前</div>
+                    <div class="f-name">俞樾 <span class="figure-era;">(清代学者/曲园主人)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建苏州曲园，著《春在堂全集》，园以学术研究、讲学为核心功能。<br><b>风格：</b>简朴雅致，书卷气浓，小园见治学之趣。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('俞樾')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 40：梁启超 -->
+                <div class="figure-card">
+                    <img src="image/梁启超.jpg" class="f-img" alt="梁启超">
+                    <div class="f-quote">饮冰室中，思想启蒙</div>
+                    <div class="f-name">梁启超 <span class="figure-era;">(近代思想家/饮冰室造园者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建天津饮冰室，融中西造园风格，以园为思想传播、学术交流之地。<br><b>风格：</b>中西合璧，重思想启蒙，园林承载文化革新。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('梁启超')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 新增人物卡片 -->
+                <div class="figure-card">
+                    <img src="image/江雪舟.jpg" class="f-img" alt="园林名人">
+                    <div class="f-quote">山水之间，自有天地</div>
+                    <div class="f-name">江雪舟 <span class="figure-era;">(明代造园名家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>擅长理水叠山，布局精巧自然，多作江南文人小园。<br><b>风格：</b>清雅简约，重意境营造。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('江雪舟')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+
+                <div class="figure-card">
+                    <img src="image/陆云帆.jpg" class="f-img" alt="园林名人">
+                    <div class="f-quote">园无石不秀，居无竹不雅</div>
+                    <div class="f-name">陆云帆 <span class="figure-era;">(清代叠山名师)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>善用湖石造景，层次分明，虚实相生。<br><b>风格：</b>雄浑大气，咫尺山林。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('陆云帆')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+
+                <div class="figure-card">
+                    <img src="image/56.png" class="f-img" alt="园林名人">
+                    <div class="f-quote">一步一景，一画一天</div>
+                    <div class="f-name">苏慕卿 <span class="figure-era;">(明代文人造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>将诗词意境融入园林，曲径通幽，移步换景。<br><b>风格：</b>文人气息浓厚，含蓄雅致。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('苏慕卿')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+
+                <div class="figure-card">
+                    <img src="image/57.png" class="f-img" alt="园林名人">
+                    <div class="f-quote">虽由人作，宛若天成</div>
+                    <div class="f-name">柳清和 <span class="figure-era;">(清代造园师)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>精通花木配置，四季有景，自然和谐。<br><b>风格：</b>清新自然，生机盎然。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('柳清和')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+
+                <div class="figure-card">
+                    <img src="image/58.png" class="f-img" alt="园林名人">
+                    <div class="f-quote">藏山隐水，静气养心</div>
+                    <div class="f-name">秦砚秋 <span class="figure-era;">(明代园林学者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>著有园林杂记，推崇隐逸文化与园居生活。<br><b>风格：</b>淡泊宁静，古朴简约。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('秦砚秋')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+
+                <div class="figure-card">
+                    <img src="image/61.png" class="f-img" alt="园林名人">
+                    <div class="f-quote">水随山转，山因水活</div>
+                    <div class="f-name">方静川 <span class="figure-era;">(清代理水名家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以活水造园，动静结合，水景变化丰富。<br><b>风格：</b>灵动流畅，自然成趣。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('方静川')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+
+                <div class="figure-card">
+                    <img src="image/62.png" class="f-img" alt="园林名人">
+                    <div class="f-quote">亭台藏画意，草木入诗心</div>
+                    <div class="f-name">温竹庭 <span class="figure-era;">(明代造园名士)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>建筑与自然相融，亭台楼阁位置精妙。<br><b>风格：</b>古朴典雅，诗画满园。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('温竹庭')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+
+                <div class="figure-card">
+                    <img src="image/63.png" class="f-img" alt="园林名人">
+                    <div class="f-quote">心随景远，意与天游</div>
+                    <div class="f-name">顾砚书 <span class="figure-era;">(清代文人造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以书入园，以画构景，文化气息浓厚。<br><b>风格：</b>书卷气十足，清雅脱俗。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('顾砚书')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 51 -->
+                <div class="figure-card">
+                    <img src="image/64.png" class="f-img" alt="沈石田">
+                    <div class="f-quote">园以画意立，景随心境生</div>
+                    <div class="f-name">沈石田 <span class="figure-era;">(明代吴门造园画家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>开创山水画意造园法，将平远山水格局融入江南宅园。<br><b>风格：</b>温润平和，疏朗自然，田园意趣浓厚。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('沈石田')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 52 -->
+                <div class="figure-card">
+                    <img src="image/65.png" class="f-img" alt="文伯仁">
+                    <div class="f-quote">叠山藏曲径，引水绕闲亭</div>
+                    <div class="f-name">文伯仁 <span class="figure-era;">(明代山水造园名家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>擅长曲折空间布局，打造幽深回转的园林秘境。<br><b>风格：</b>幽深内敛，移步换景，层次繁复精巧。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('文伯仁')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 53 -->
+                <div class="figure-card">
+                    <img src="image/66.png" class="f-img" alt="周亮工">
+                    <div class="f-quote">一园藏四季，草木见春秋</div>
+                    <div class="f-name">周亮工 <span class="figure-era;">(明末清初园林花木大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>系统研究园林花木配植，打造四季常绿有景可赏的园林。<br><b>风格：</b>生机盎然，四季分明，草木与建筑共生。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('周亮工')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 54 -->
+                <div class="figure-card">
+                    <img src="image/67.png" class="f-img" alt="归庄">
+                    <div class="f-quote">归隐林泉处，清风满故园</div>
+                    <div class="f-name">归庄 <span class="figure-era;">(明末隐逸造园文人)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建草堂别业，将家国情志融入园林山水营造。<br><b>风格：</b>简素清逸，气节风骨，淡泊隐逸。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('归庄')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 55 -->
+                <div class="figure-card">
+                    <img src="image/68.png" class="f-img" alt="朱彝尊">
+                    <div class="f-quote">藏书藏丘壑，闲园养性灵</div>
+                    <div class="f-name">朱彝尊 <span class="figure-era;">(清代学者藏书家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建曝书亭园林，将藏书治学与园居生活完全结合。<br><b>风格：</b>书卷浓郁，安静雅致，治学与闲居相融。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('朱彝尊')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 56 -->
+                <div class="figure-card">
+                    <img src="image/69.png" class="f-img" alt="恽寿平">
+                    <div class="f-quote">淡墨写山水，清韵入园林</div>
+                    <div class="f-name">恽寿平 <span class="figure-era;">(清代花鸟造园画家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以没骨花鸟画意造园，花木布置温润灵动。<br><b>风格：</b>清雅秀逸，温润柔和，自然灵动脱俗。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('恽寿平')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 57 -->
+                <div class="figure-card">
+                    <img src="image/70.png" class="f-img" alt="王士祯">
+                    <div class="f-quote">江南烟雨后，闲园听晚风</div>
+                    <div class="f-name">王士祯 <span class="figure-era;">(清代文坛领袖/园居大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建渔洋别业，以神韵诗派美学指导园林整体营造。<br><b>风格：</b>朦胧悠远，诗意含蓄，江南韵味十足。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('王士祯')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 58 -->
+                <div class="figure-card">
+                    <img src="image/71.png" class="f-img" alt="石熙">
+                    <div class="f-quote">叠山如真岳，引水若江湖</div>
+                    <div class="f-name">石熙 <span class="figure-era;">(清代职业叠山匠师)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>擅长大型湖石假山营造，空间气势雄浑开阔。<br><b>风格：</b>大气磅礴，虚实相生，咫尺千里山林气势。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('石熙')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 59 -->
+                <div class="figure-card">
+                    <img src="image/74.png" class="f-img" alt="蒋廷锡">
+                    <div class="f-quote">亭台依草木，风月入闲庭</div>
+                    <div class="f-name">蒋廷锡 <span class="figure-era;">(清代宫廷造园画家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>参与皇家御园设计，将宫廷雅致审美融入民间造园。<br><b>风格：</b>端庄雅致，富丽清幽，皇家文人双韵兼具。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('蒋廷锡')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 60 -->
+                <div class="figure-card">
+                    <img src="image/75.png" class="f-img" alt="方苞">
+                    <div class="f-quote">简园藏大道，静处养初心</div>
+                    <div class="f-name">方苞 <span class="figure-era;">(清代桐城派散文家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以古文简洁章法营造园林，反对繁复奢靡，推崇简约自然。<br><b>风格：</b>简洁方正，质朴淡雅，文气内敛厚重。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('方苞')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 61 -->
+                <div class="figure-card">
+                    <img src="image/76.png" class="f-img" alt="刘大櫆">
+                    <div class="f-quote">山水藏文气，闲园寄素心</div>
+                    <div class="f-name">刘大櫆 <span class="figure-era;">(清代桐城造园文人)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>将古文气韵融入园林空间节奏，开合收放布局有序。<br><b>风格：</b>气韵流畅，方正清雅，极简文人风骨。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('刘大櫆')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 62 -->
+                <div class="figure-card">
+                    <img src="image/77.png" class="f-img" alt="姚鼐">
+                    <div class="f-quote">登高观山水，闲坐悟园心</div>
+                    <div class="f-name">姚鼐 <span class="figure-era;">(清代桐城派集大成者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>总结园林阴阳刚柔美学，完善文人造园审美体系。<br><b>风格：</b>刚柔并济，中正平和，文化底蕴深厚。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('姚鼐')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 63 -->
+                <div class="figure-card">
+                    <img src="image/78.png" class="f-img" alt="罗聘">
+                    <div class="f-quote">怪石藏幽趣，闲园见本心</div>
+                    <div class="f-name">罗聘 <span class="figure-era;">(清代扬州八怪造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>擅长奇石怪景造园，打破传统规整园林格局。<br><b>风格：</b>奇趣灵动，不拘礼法，野逸脱俗。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('罗聘')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 64 -->
+                <div class="figure-card">
+                    <img src="image/64.png" class="f-img" alt="黄慎">
+                    <div class="f-quote">竹石依茅舍，清风满野园</div>
+                    <div class="f-name">黄慎 <span class="figure-era;">(清代扬州画派造园名家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>打造市井山野结合的平民园林，打破文人园林壁垒。<br><b>风格：</b>质朴野逸，烟火气浓，自然随性。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('黄慎')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 65 -->
+                <div class="figure-card">
+                    <img src="image/79.png" class="f-img" alt="金农">
+                    <div class="f-quote">墨梅疏竹里，独守一园清</div>
+                    <div class="f-name">金农 <span class="figure-era;">(清代书画造园大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以梅竹为核心造景，极简留白园林空间开创者。<br><b>风格：</b>孤高清冷，极简留白，意境孤绝悠远。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('金农')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 66 -->
+                <div class="figure-card">
+                    <img src="image/80.png" class="f-img" alt="高凤翰">
+                    <div class="f-quote">残山剩水意，闲园自在心</div>
+                    <div class="f-name">高凤翰 <span class="figure-era;">(清代左手书画造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以残缺写意美学造园，推崇自然野趣不事雕琢。<br><b>风格：</b>苍劲古朴，写意自然，残缺见意境。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('高凤翰')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 67 -->
+                <div class="figure-card">
+                    <img src="image/81.png" class="f-img" alt="边寿民">
+                    <div class="f-quote">芦荡藏闲趣，秋水绕园亭</div>
+                    <div class="f-name">边寿民 <span class="figure-era;">(清代水乡造园画家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>将江南芦苇水荡自然风貌融入城市园林营造。<br><b>风格：</b>水乡野逸，清冷空灵，秋日意境绝佳。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('边寿民')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 68 -->
+                <div class="figure-card">
+                    <img src="image/82.png" class="f-img" alt="汪中">
+                    <div class="f-quote">考古知园史，循古造新境</div>
+                    <div class="f-name">汪中 <span class="figure-era;">(清代园林考据学者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>考据历代园林沿革历史，以古制指导当代园林修复。<br><b>风格：</b>严谨复古，古韵悠长，古意新生相融。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('汪中')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 69 -->
+                <div class="figure-card">
+                    <img src="image/83.png" class="f-img" alt="洪亮吉">
+                    <div class="f-quote">一园藏天地，万卷伴闲居</div>
+                    <div class="f-name">洪亮吉 <span class="figure-era;">(清代学者园林营造者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建藏书园林，将学术研究、诗文创作与园居结合。<br><b>风格：</b>书香浓厚，安静沉稳，治学闲居一体。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('洪亮吉')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 70 -->
+                <div class="figure-card">
+                    <img src="image/84.png" class="f-img" alt="黄景仁">
+                    <div class="f-quote">冷月疏林里，孤园寄远思</div>
+                    <div class="f-name">黄景仁 <span class="figure-era;">(清代诗人园林营造者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以清冷诗意美学造园，打造含蓄感伤的诗意园林。<br><b>风格：</b>清冷婉约，诗意绵长，意境幽深动人。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('黄景仁')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 71 -->
+                <div class="figure-card">
+                    <img src="image/87.png" class="f-img" alt="恽敬">
+                    <div class="f-quote">园理循古法，心境逐自然</div>
+                    <div class="f-name">恽敬 <span class="figure-era;">(清代阳湖派园林理论家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>融合桐城与江南造园理念，开创折中造园美学。<br><b>风格：</b>开合有度，中正雅致，兼容南北造园特色。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('恽敬')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 72 -->
+                <div class="figure-card">
+                    <img src="image/134.png" class="f-img" alt="张问陶">
+                    <div class="f-quote">随性安闲处，园景自天成</div>
+                    <div class="f-name">张问陶 <span class="figure-era;">(清代性灵诗派造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>将性灵说融入造园，反对刻意雕琢，推崇本心自然。<br><b>风格：</b>随性自然，天真闲逸，不拘古典规制。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('张问陶')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 73 -->
+                <div class="figure-card">
+                    <img src="image/88.png" class="f-img" alt="改琦">
+                    <div class="f-quote">闲亭藏秀色，柔景入诗心</div>
+                    <div class="f-name">改琦 <span class="figure-era;">(清代仕女画派造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以柔美秀逸仕女画意造园，园林布置温婉细腻。<br><b>风格：</b>秀逸柔美，细腻雅致，婉约江南韵味。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('改琦')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 74 -->
+                <div class="figure-card">
+                    <img src="image/89.png" class="f-img" alt="费丹旭">
+                    <div class="f-quote">疏影横斜里，闲园藏温柔</div>
+                    <div class="f-name">费丹旭 <span class="figure-era;">(清代晚清书画造园名家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>擅长梅影疏林造景，光影留白营造朦胧园林意境。<br><b>风格：</b>朦胧柔和，疏朗温柔，光影意境绝佳。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('费丹旭')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 75 -->
+                <div class="figure-card">
+                    <img src="image/90.png" class="f-img" alt="何绍基">
+                    <div class="f-quote">笔墨藏风骨，园景见本心</div>
+                    <div class="f-name">何绍基 <span class="figure-era;">(清代晚清书法造园大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以书法笔意规划园林建筑线条，刚劲流畅布局。<br><b>风格：</b>刚劲雅致，线条流畅，文人风骨浓郁。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('何绍基')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 76 -->
+                <div class="figure-card">
+                    <img src="image/91.png" class="f-img" alt="郑珍">
+                    <div class="f-quote">黔山融水意，古园出新境</div>
+                    <div class="f-name">郑珍 <span class="figure-era;">(清代西南地域造园名家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>融合西南山地风貌与江南造园技艺，开创地域园林。<br><b>风格：</b>山韵厚重，水意灵动，南北风格交融。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('郑珍')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 77 -->
+                <div class="figure-card">
+                    <img src="image/92.png" class="f-img" alt="莫友芝">
+                    <div class="f-quote">藏书藏丘壑，古韵满闲园</div>
+                    <div class="f-name">莫友芝 <span class="figure-era;">(清代西南藏书造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>西南地区园林藏书开创者，古建古籍与园林共生。<br><b>风格：</b>古朴厚重，古韵悠长，地域文化浓厚。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('莫友芝')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 78 -->
+                <div class="figure-card">
+                    <img src="image/93.png" class="f-img" alt="赵之谦">
+                    <div class="f-quote">金石藏古意，花木焕新生</div>
+                    <div class="f-name">赵之谦 <span class="figure-era;">(晚清金石书画造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>将金石古朴古意融入园林，古建花木新生结合。<br><b>风格：</b>古朴厚重，艳丽清雅，金石古韵十足。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('赵之谦')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 79 -->
+                <div class="figure-card">
+                    <img src="image/94.png" class="f-img" alt="翁同龢">
+                    <div class="f-quote">世家藏雅韵，闲园养清欢</div>
+                    <div class="f-name">翁同龢 <span class="figure-era;">(晚清帝师世家造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建常熟翁氏宅园，世家文人园林集大成之作。<br><b>风格：</b>端庄雅致，世家风范，文气厚重内敛。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('翁同龢')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 80 -->
+                <div class="figure-card">
+                    <img src="image/95.png" class="f-img" alt="吴昌硕">
+                    <div class="f-quote">金石融花木，苍劲入闲园</div>
+                    <div class="f-name">吴昌硕 <span class="figure-era;">(晚清海派书画造园宗师)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>海派园林开创者，将金石苍劲画意融入花木山石造景。<br><b>风格：</b>苍劲古朴，雄浑雅致，海派江南新韵。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('吴昌硕')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 81 -->
+                <div class="figure-card">
+                    <img src="image/齐白石.jpg" class="f-img" alt="齐白石">
+                    <div class="f-quote">田园真意趣，草木见天真</div>
+                    <div class="f-name">齐白石 <span class="figure-era;">(近代国画大师造园爱好者)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以田园民间画意造园，打破传统文人高雅壁垒。<br><b>风格：</b>质朴天真，市井田园，生机野趣盎然。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('齐白石')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 82 -->
+                <div class="figure-card">
+                    <img src="image/97.png" class="f-img" alt="黄宾虹">
+                    <div class="f-quote">浑厚华滋境，深山入小园</div>
+                    <div class="f-name">黄宾虹 <span class="figure-era;">(近代山水园林美学宗师)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以浑厚华滋山水意境造园，重构古典园林深层美学。<br><b>风格：</b>浑厚幽深，气韵厚重，山水意境深邃。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('黄宾虹')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 83 -->
+                <div class="figure-card">
+                    <img src="image/100.png" class="f-img" alt="陈师曾">
+                    <div class="f-quote">新旧融一境，古园焕新声</div>
+                    <div class="f-name">陈师曾 <span class="figure-era;">(近代中西园林融合先驱)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>率先融合中西园林空间理念，推动古典园林现代化。<br><b>风格：</b>中西交融，古今合一，简洁现代雅致。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('陈师曾')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 84 -->
+                <div class="figure-card">
+                    <img src="image/101.png" class="f-img" alt="刘海粟">
+                    <div class="f-quote">笔墨破陈法，古园开新境</div>
+                    <div class="f-name">刘海粟 <span class="figure-era;">(近代革新派园林理论家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>打破古典园林守旧规制，推动园林艺术革新发展。<br><b>风格：</b>大胆奔放，古今革新，色彩气韵生动。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('刘海粟')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 85 -->
+                <div class="figure-card">
+                    <img src="image/102.png" class="f-img" alt="丰子恺">
+                    <div class="f-quote">人间烟火暖，闲园见初心</div>
+                    <div class="f-name">丰子恺 <span class="figure-era;">(近代生活美学造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>将人间生活烟火融入园林，打造温暖治愈闲居园林。<br><b>风格：</b>简约温暖，平淡天真，生活气息浓厚。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('丰子恺')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 86 -->
+                <div class="figure-card">
+                    <img src="image/张大千.jpg" class="f-img" alt="张大千">
+                    <div class="f-quote">万里山河意，一园藏风云</div>
+                    <div class="f-name">张大千 <span class="figure-era;">(近代大千园林营造大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>营建大风堂园林，融合敦煌、山水、中西多重造园风格。<br><b>风格：</b>恢弘大气，富丽雅致，包罗万象意境。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('张大千')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 87 -->
+                <div class="figure-card">
+                    <img src="image/104.png" class="f-img" alt="潘天寿">
+                    <div class="f-quote">险绝藏丘壑，刚劲立园魂</div>
+                    <div class="f-name">潘天寿 <span class="figure-era;">(近代写意园林美学大师)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以险绝构图、刚劲骨法造园，重构园林空间骨架。<br><b>风格：</b>刚劲险绝，方正大气，骨力意境十足。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('潘天寿')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 88 -->
+                <div class="figure-card">
+                    <img src="image/105.png" class="f-img" alt="傅抱石">
+                    <div class="f-quote">烟雨江南梦，闲园藏远山</div>
+                    <div class="f-name">傅抱石 <span class="figure-era;">(近代江南园林意境宗师)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以抱石皴烟雨山水意境，重新诠释江南园林朦胧美。<br><b>风格：</b>烟雨朦胧，温润悠远，江南诗意极致。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('傅抱石')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 89 -->
+                <div class="figure-card">
+                    <img src="image/106.png" class="f-img" alt="李可染">
+                    <div class="f-quote">墨韵藏山水，静园见生机</div>
+                    <div class="f-name">李可染 <span class="figure-era;">(近代山水园林革新大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>将明暗光影理念融入古典园林，打造动静光影园林。<br><b>风格：</b>厚重静谧，光影灵动，墨韵生机兼具。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('李可染')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 90 -->
+                <div class="figure-card">
+                    <img src="image/107.png" class="f-img" alt="陆俨少">
+                    <div class="f-quote">云水绕丘壑，闲园逐清风</div>
+                    <div class="f-name">陆俨少 <span class="figure-era;">(近代山水园林空间大师)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以云水流动章法规划园林动线，空间流畅灵动。<br><b>风格：</b>云水灵动，疏朗流畅，山水气韵生动。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('陆俨少')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 91 -->
+                <div class="figure-card">
+                    <img src="image/108.png" class="f-img" alt="关山月">
+                    <div class="f-quote">岭南藏绿意，古园焕新生</div>
+                    <div class="f-name">关山月 <span class="figure-era;">(近代岭南园林开创大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>融合岭南湿热自然风貌，打造南方特色现代园林。<br><b>风格：</b>绿意盎然，岭南温润，南北园林交融。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('关山月')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 92 -->
+                <div class="figure-card">
+                    <img src="image/109.png" class="f-img" alt="黎雄才">
+                    <div class="f-quote">苍松藏峻岭，活水绕闲园</div>
+                    <div class="f-name">黎雄才 <span class="figure-era;">(近代岭南山水造园名家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>将岭南山林峻岭风貌融入城市园林理水叠山。<br><b>风格：</b>苍劲雄浑，岭南野逸，山水气势开阔。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('黎雄才')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 93 -->
+                <div class="figure-card">
+                    <img src="image/110.png" class="f-img" alt="谢稚柳">
+                    <div class="f-quote">宋韵藏今境，闲园守古心</div>
+                    <div class="f-name">谢稚柳 <span class="figure-era;">(近代宋韵园林复原大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>深耕宋代园林美学，复原宋代雅致简约造园范式。<br><b>风格：</b>清雅宋韵，简约内敛，古韵雅致悠长。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('谢稚柳')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 94 -->
+                <div class="figure-card">
+                    <img src="image/113.png" class="f-img" alt="陈佩秋">
+                    <div class="f-quote">丹青焕古木，清韵满闲庭</div>
+                    <div class="f-name">陈佩秋 <span class="figure-era;">(近代花鸟园林美学大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以宋画花鸟意境规划园林花木，草木布置雅致灵动。<br><b>风格：</b>清丽雅致，花鸟灵动，宋韵江南意境。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('陈佩秋')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 95 -->
+                <div class="figure-card">
+                    <img src="image/启功.jpg" class="f-img" alt="启功">
+                    <div class="f-quote">笔墨藏儒雅，闲园守古风</div>
+                    <div class="f-name">启功 <span class="figure-era;">(近代书法园林文化大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以书法儒雅风骨指导皇家、文人园林文化传承。<br><b>风格：</b>儒雅端庄，温润古朴，传统文化底蕴深厚。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('启功')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 96 -->
+                <div class="figure-card">
+                    <img src="image/吴冠中.jpg" class="f-img" alt="吴冠中">
+                    <div class="f-quote">黑白分天地，线条构园境</div>
+                    <div class="f-name">吴冠中 <span class="figure-era;">(近代中西园林空间宗师)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以现代构成、黑白线条重构古典园林空间骨架。<br><b>风格：</b>极简现代，中西合一，线条意境极致简约。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('吴冠中')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 97 -->
+                <div class="figure-card">
+                    <img src="image/116.png" class="f-img" alt="张仃">
+                    <div class="f-quote">焦墨藏丘壑，古园守本真</div>
+                    <div class="f-name">张仃 <span class="figure-era;">(近代焦墨园林美学大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以焦墨苍劲骨法，梳理古典园林原始自然本真。<br><b>风格：</b>苍劲质朴，回归本真，古韵厚重纯粹。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('张仃')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 98 -->
+                <div class="figure-card">
+                    <img src="image/117.png" class="f-img" alt="黄永玉">
+                    <div class="f-quote">童心藏丘壑，趣意满闲园</div>
+                    <div class="f-name">黄永玉 <span class="figure-era;">(近代趣味园林革新大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>打破古典园林严肃刻板，打造趣味活泼现代园林。<br><b>风格：</b>活泼有趣，自由灵动，童真创意十足。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('黄永玉')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 99 -->
+                <div class="figure-card">
+                    <img src="image/韩美林.jpg" class="f-img" alt="韩美林">
+                    <div class="f-quote">万象融一境，美意满园林</div>
+                    <div class="f-name">韩美林 <span class="figure-era;">(近代现代园林美学大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>融合传统纹样与现代审美，打造文化创意城市园林。<br><b>风格：</b>典雅活泼，古今交融，文化艺术感浓厚。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('韩美林')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 100 -->
+                <div class="figure-card">
+                    <img src="image/范曾.jpg" class="f-img" alt="范曾">
+                    <div class="f-quote">诗画融园景，风雅续古今</div>
+                    <div class="f-name">范曾 <span class="figure-era;">(近代文人园林传承大家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>延续千年文人造园文脉，诗书画园一体传承创新。<br><b>风格：</b>儒雅风雅，古今延续，文人意境纯粹正统。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('范曾')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+                <!-- 101 -->
+                <div class="figure-card">
+                    <img src="image/120.png" class="f-img" alt="林砚之">
+                    <div class="f-quote">静水涵山影，闲亭纳晚风</div>
+                    <div class="f-name">林砚之 <span class="figure-era;">(明代文人造园家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>善造静水园景，以倒影成画，意境清和。<br><b>风格：</b>宁静平和，简约含蓄，自然成趣。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('林砚之')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+
+                <!-- 102 -->
+                <div class="figure-card">
+                    <img src="image/121.png" class="f-img" alt="苏晚棠">
+                    <div class="f-quote">花木含春意，亭台隐书香</div>
+                    <div class="f-name">苏晚棠 <span class="figure-era;">(清代园艺名家)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>精于花木搭配，四季有景，步移景异。<br><b>风格：</b>温润雅致，生机盎然，文人气息浓厚。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('苏晚棠')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+
+                <!-- 103 -->
+                <div class="figure-card">
+                    <img src="image/123.png" class="f-img" alt="陆松风">
+                    <div class="f-quote">石瘦存古意，云闲入园来</div>
+                    <div class="f-name">陆松风 <span class="figure-era;">(明代叠山名师)</span></div>
+                    <div class="f-desc"><b>核心成就：</b>以瘦、皱、透、漏为则，叠山古朴苍劲。<br><b>风格：</b>苍古疏朗，气韵高古，咫尺山林。</div>
+                    <button class="btn-masterpiece" onclick="showMasterpiece('陆松风')"><i class="fa-solid fa-gem"></i> 查看代表作</button>
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="module-card">
+        <div class="module-title">百工争鸣：造园流派与匠人谱系</div>
+        <div class="visual-container">
+            <div class="tree-sidebar">
+                <div id="school-tree" style="width: 100%; height: 600px;"></div>
+            </div>
+            <div class="info-display" id="info-card">
+                <div class="empty-state">
+                    <i class="fa-solid fa-hand-pointer"></i>
+                    <p>点击左侧谱系节点查看详情</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="craft-technique-section">
+        <div class="xs-title"><i class="fa-solid fa-hammer"></i> 核心技艺：无钉之固，寸木之巧</div>
+        <div class="craft-technique-layout">
+            <ul class="craft-technique-list">
+                <li><b>大木作・榫卯绝技：</b>虎丘断梁殿纯靠复杂榫卯支撑600余年；天安门榫卯精度达毫米级。</li>
+                <li><b>小木作・装修雕刻：</b>花窗、栏杆、挂落雕花细腻，砖木石三雕线条柔顺秀逸。</li>
+                <li><b>烫样模型：</b>样式雷独创的按比例缩小的立体建筑模型，内部结构、彩画细节一应俱全。</li>
+                <li><b>叠山掇石：</b>用“钩带法”嵌合，山石浑然一体如真山。</li>
+            </ul>
+            <div class="craft-technique-media">
+                <img src="image/榫卯.png" alt="榫卯">
+            </div>
+        </div>
+    </div> -->
+</div>
+
+<!-- 桑基图专属详情弹窗 -->
+<div id="sankey-modal"></div>
+
+<!-- 详情弹窗 -->
+<div id="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal()"><i class="fa-solid fa-circle-xmark"></i></span>
+        <div class="result-title" id="m-title">加载中...</div>
+        <div class="rating-section" style="display:none;">
+            <div class="rating-title">我的游园评分：</div>
+            <div class="stars" id="star-container">
+                <i class="fa-solid fa-star" data-val="1"></i>
+                <i class="fa-solid fa-star" data-val="2"></i>
+                <i class="fa-solid fa-star" data-val="3"></i>
+                <i class="fa-solid fa-star" data-val="4"></i>
+                <i class="fa-solid fa-star" data-val="5"></i>
+            </div>
+            <div class="rating-score" id="rating-score-text">暂未评分</div>
+        </div>
+        <img id="m-img" src="" class="result-img" style="display:none;">
+        <div id="m-mini-map-box" style="display:none; width: 100%; height: 350px; margin-bottom: 20px;"></div>
+        <div class="result-text" id="m-text"></div>
+    </div>
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+
+<!-- AI 智能体 SDK -->
+<script>
+    
+</script>
+
+<script>
+    if (typeof restoreNightMode === 'function') {
+        restoreNightMode();
+    }
+    let figureToggleExpanded = false;
+
+    function buildFigureCollapse() {
+        const grid = document.querySelector('#main-tab-3 .figures-grid');
+        if (!grid || grid.dataset.foldReady === '1') return;
+
+        const allCards = Array.from(grid.querySelectorAll('.figure-card'));
+        if (allCards.length <= 16) return;
+
+        grid.dataset.foldReady = '1';
+        grid.innerHTML = '';
+
+        const firstCards = allCards.slice(0, 16);
+        const moreCards = allCards.slice(16);
+
+        firstCards.forEach(card => grid.appendChild(card));
+
+        let toggleRow = document.getElementById('figureToggleRow');
+        if (!toggleRow) {
+            toggleRow = document.createElement('div');
+            toggleRow.id = 'figureToggleRow';
+            toggleRow.className = 'figure-toggle-row';
+        } else {
+            toggleRow.innerHTML = '';
+        }
+
+        let btn = document.getElementById('toggleBtn');
+        if (!btn) {
+            btn = document.createElement('button');
+            btn.id = 'toggleBtn';
+            btn.type = 'button';
+            btn.className = 'figure-toggle-btn';
+            btn.onclick = toggleMore;
+        }
+        toggleRow.appendChild(btn);
+        grid.appendChild(toggleRow);
+
+        const moreWrap = document.createElement('div');
+        moreWrap.id = 'moreFigures';
+        moreWrap.className = 'more-figures-wrap';
+
+        const moreGrid = document.createElement('div');
+        moreGrid.className = 'more-figures-grid';
+
+        moreCards.forEach(card => moreGrid.appendChild(card));
+        moreWrap.appendChild(moreGrid);
+        grid.appendChild(moreWrap);
+
+        updateToggleBtnText();
+    }
+
+    function updateToggleBtnText() {
+        const btn = document.getElementById('toggleBtn');
+        if (!btn) return;
+        btn.innerHTML = figureToggleExpanded ? '收起其余名人' : '展开其余名人';
+    }
+
+    function toggleMore() {
+        const content = document.getElementById('moreFigures');
+        const btn = document.getElementById('toggleBtn');
+        if (!content || !btn) return;
+
+        figureToggleExpanded = !figureToggleExpanded;
+        content.style.display = figureToggleExpanded ? 'block' : 'none';
+        updateToggleBtnText();
+
+        if (figureToggleExpanded) {
+            setTimeout(() => {
+                btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+        } else {
+            btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', buildFigureCollapse);
+    window.addEventListener('load', buildFigureCollapse);
+</script>
+<script>
+    // 当页面从隐藏变为显示时，重新渲染桑基图（解决从其他页面切回来颜色不对的问题）
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden && document.getElementById('sankey-chart')) {
+            if (typeof initSankeyChart === 'function') {
+                setTimeout(initSankeyChart, 100);
+            }
+        }
+    });
+    
+    // 监听页面显示（适用于使用前进后退按钮）
+    window.addEventListener('pageshow', function() {
+        if (document.getElementById('sankey-chart')) {
+            if (typeof initSankeyChart === 'function') {
+                setTimeout(initSankeyChart, 100);
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>构造分类 - 中国古代园林</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="asset-manifest.js"></script>
+    <script src="runtime.js"></script>
+</head>
+<body class="earth-page" onload="initEarthPage()">
+
+<canvas id="ink-canvas"></canvas>
+
+<button class="theme-toggle" onclick="toggleNightMode()">
+    <i class="fa-solid fa-moon"></i> 夜游园林
+</button>
+
+<nav>
+    <div class="nav-title" onclick="window.location.href='home.html'" style="cursor: pointer;" title="返回首页"><i class="fa-solid fa-leaf"></i> 中国古典园林科普系统</div>
+</nav>
+
+<div class="container earth-container">
+    <div class="tab-bar">
+        <div class="tab" onclick="window.location.href='gallery.html'"><i class="fa-solid fa-sitemap"></i> 历代风华</div>
+        <div class="tab active" onclick="window.location.href='earth.html'"><i class="fa-solid fa-cubes"></i> 构造分类</div>
+        <div class="tab" onclick="window.location.href='philosophy.html'"><i class="fa-solid fa-scroll"></i> 人物与著作</div>
+        <div class="tab" onclick="window.location.href='game.html'"><i class="fa-solid fa-hourglass-half"></i> 意象哲学</div>
+        <div class="tab" onclick="window.location.href='fun.html'"><i class="fa-solid fa-robot"></i> AI 智囊</div>
+    </div>
+
+    <div class="earth-nav-placeholder"></div>
+
+    <div class="earth-control-panel">
+        <div class="earth-mode-switch">
+            <button class="earth-mode-tag active">规范词条</button>
+            <button class="earth-mode-tag" onclick="window.location.href='style_version.html'">流派风格</button>
+        </div>
+        <div class="earth-search-wrapper">
+            <input type="text" id="earth-search" placeholder="搜寻营造之术..." onkeyup="handleSearchInput(this.value)" onkeydown="handleSearchKeydown(event)">
+            <i class="fa-solid fa-magnifying-glass" onclick="performSearch()"></i>
+            <div class="search-suggestions" id="search-suggestions"></div>
+            <div id="search-error-container"></div>
+        </div>
+    </div>
+
+    <div class="earth-marquee-container">
+        <div class="earth-mq-track" id="mq-track"></div>
+    </div>
+
+    <div class="earth-main-layout">
+        <div class="earth-side-rail-area">
+            <div class="earth-side-line"></div>
+            <div id="earth-pendant-mover"></div>
+        </div>
+        <div id="earth-content"></div>
+    </div>
+</div>
+
+<div id="modal" class="modal"><div class="modal-content" id="m-body"></div></div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+<script>
+    if (typeof restoreNightMode === 'function') {
+        restoreNightMode();
+    }
+    const cNums = ['壹','贰','叁','肆','伍','陆'];
+    let currentSearchValue = '';
+
+    function initEarthPage() {
+        if(typeof initInkSystem === 'function') initInkSystem();
+        renderEarth();
+        initMarquee();
+        window.addEventListener('scroll', handleSideNavMove);
+        
+        // 恢复夜游模式状态
+        if (typeof restoreNightMode === 'function') {
+            restoreNightMode();
+        }
+        
+
+    }
+
+    function renderEarth() {
+        const mover = document.getElementById('earth-pendant-mover');
+        const main = document.getElementById('earth-content');
+        mover.innerHTML = ''; main.innerHTML = '';
+
+        const itemImages = {
+            "ting": "亭.png", "xie": "榭.png", "fang": "舫.png", 
+            "lang": "廊.png", "xuan": "轩.png", "guan": "斋.png",
+            "dougong": "斗拱.png", "feiyan": "飞檐.png", "queti": "雀替.png", "zhu": "额枋.png",
+            "louchuang": "漏窗.png", "kongchuang": "空窗.png", "geshan": "格扇门.png", "zao": "挂落.png",
+            "huajie": "花街铺地.png", "tabu": "汀步.png",
+            "yuedong": "月洞门.png", "yixingmen": "异形门.png", "yunqiang": "影墙.png",
+            "jiashan": "假山.png", "qiao": "桥.png", "langan": "栏杆.png", 
+            "wenhua": "匾额.png", "gang": "太平缸.png", "boan": "驳岸.png"
+        };
+
+        catalog['norm'].forEach((sec, idx) => {
+            const tag = document.createElement('div');
+            tag.className = 'earth-pendant-tag';
+            tag.id = `ptag-${idx}`;
+            tag.innerText = sec.t;
+            tag.onclick = () => {
+                const target = document.getElementById(`section-${idx}`);
+                window.scrollTo({ top: target.offsetTop - 180, behavior: 'smooth' });
+            };
+            mover.appendChild(tag);
+
+            let html = `
+                <div class="earth-section" id="section-${idx}" data-idx="${idx}">
+                    <div class="earth-sec-header">${cNums[idx]} · ${sec.t}</div>
+                    <div class="earth-grid">`;
+            sec.items.forEach(k => {
+                const d = wikiDB[k] || { n: k };
+                const imgFile = itemImages[k] || `${k}.jpg`;
+                html += `
+                    <div class="earth-card" onclick="openDetail('${k}')">
+                        <img class="earth-card-img" src="基础构造/${imgFile}" onerror="this.onerror=null;this.src='image/盆景.jpg'">
+                        <div class="earth-card-name">${d.n}</div>
+                    </div>`;
+            });
+            html += `</div></div>`;
+            main.innerHTML += html;
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const idx = entry.target.getAttribute('data-idx');
+                    document.querySelectorAll('.earth-pendant-tag').forEach(t => t.classList.remove('active'));
+                    const activeTag = document.getElementById(`ptag-${idx}`);
+                    if(activeTag) activeTag.classList.add('active');
+                }
+            });
+        }, { rootMargin: '-30% 0px -60% 0px' });
+        document.querySelectorAll('.earth-section').forEach(s => observer.observe(s));
+    }
+
+    function handleSideNavMove() {
+        const mover = document.getElementById('earth-pendant-mover');
+        const scrollTop = window.scrollY;
+        const docHeight = document.body.scrollHeight - window.innerHeight;
+        const progress = Math.min(Math.max(scrollTop / docHeight, 0), 1);
+        const trackHeight = 550; 
+        const moverHeight = mover.offsetHeight;
+        const maxMove = trackHeight - moverHeight - 30;
+        mover.style.transform = `translateY(${progress * maxMove}px)`;
+    }
+
+    function initMarquee() {
+        const track = document.getElementById('mq-track');
+        const keys = Object.keys(wikiDB);
+        
+        const marqueeImages = {
+            "h_dian": "斋.png", "h_lou": "轩.png", "h_lan": "栏杆.png",
+            "h_bi": "影墙.png", "h_qiao": "桥.png", "h_gang": "太平缸.png",
+            "j_ting": "亭.png", "j_xie": "榭.png", "j_lang": "廊.png",
+            "j_chuang": "漏窗.png", "j_men": "月洞门.png", "j_fang": "舫.png",
+            "j_pu": "花街铺地.png", "j_shan": "假山.png",
+            "l_long": "格扇门.png", "l_xiang": "廊.png", "l_ting": "亭.png",
+            "l_tao": "飞罩.png", "l_chi": "汀步.png", "l_zao": "挂落.png", "l_xi": "空窗.png",
+            "ting": "亭.png", "xie": "榭.png", "fang": "舫.png",
+            "lang": "廊.png", "xuan": "轩.png", "guan": "斋.png",
+            "dougong": "斗拱.png", "feiyan": "飞檐.png", "queti": "雀替.png", "zhu": "额枋.png",
+            "louchuang": "漏窗.png", "kongchuang": "空窗.png", "geshan": "格扇门.png", "zao": "挂落.png",
+            "huajie": "花街铺地.png", "tabu": "汀步.png",
+            "yuedong": "月洞门.png", "yixingmen": "异形门.png", "yunqiang": "影墙.png",
+            "jiashan": "假山.png", "qiao": "桥.png", "langan": "栏杆.png",
+            "wenhua": "匾额.png", "gang": "太平缸.png", "boan": "驳岸.png"
+        };
+        
+        let h = '';
+        for(let i=0; i<3; i++) {
+            keys.forEach(k => {
+                const imgFile = marqueeImages[k] || "斋.png";
+                h += `<div class="earth-mq-item non-clickable">
+                        <img src="基础构造/${imgFile}" onerror="this.onerror=null;this.src='image/盆景.jpg'">
+                      </div>`;
+            });
+        }
+        track.innerHTML = h;
+    }
+
+    function handleSearchInput(value) {
+        currentSearchValue = value.trim();
+        const suggestions = document.getElementById('search-suggestions');
+        
+        if (currentSearchValue === '') {
+            suggestions.classList.remove('active');
+            suggestions.innerHTML = '';
+            resetAllSections();
+            return;
+        }
+        
+        showSuggestions(currentSearchValue);
+        filterCards(currentSearchValue);
+    }
+    
+    function showSuggestions(query) {
+        const suggestions = document.getElementById('search-suggestions');
+        const allNames = Object.values(wikiDB).map(d => d.n);
+        const matched = allNames.filter(name => name.includes(query));
+        
+        if (matched.length === 0) {
+            suggestions.classList.remove('active');
+            suggestions.innerHTML = '<div class="suggestion-item no-result"><i class="fa-solid fa-circle-info"></i> 无匹配结果</div>';
+            suggestions.classList.add('active');
+            return;
+        }
+        
+        let html = '';
+        matched.slice(0, 10).forEach(name => {
+            html += `<div class="suggestion-item" onclick="selectSuggestion('${name}')">
+                        <i class="fa-solid fa-search"></i>${name}
+                     </div>`;
+        });
+        
+        suggestions.innerHTML = html;
+        suggestions.classList.add('active');
+    }
+    
+    function selectSuggestion(name) {
+        document.getElementById('earth-search').value = name;
+        document.getElementById('search-suggestions').classList.remove('active');
+        performSearch();
+    }
+    
+    function handleSearchKeydown(event) {
+        if (event.key === 'Enter') {
+            performSearch();
+        } else if (event.key === 'Escape') {
+            document.getElementById('search-suggestions').classList.remove('active');
+        }
+    }
+    
+    function performSearch() {
+        const searchInput = document.getElementById('earth-search');
+        const value = searchInput.value.trim();
+        
+        if (value === '') {
+            searchInput.classList.add('search-error');
+            showErrorText('请输入搜索词');
+            setTimeout(() => {
+                searchInput.classList.remove('search-error');
+                hideErrorText();
+            }, 2000);
+            return;
+        }
+        
+        document.getElementById('search-suggestions').classList.remove('active');
+        filterCards(value);
+    }
+    
+    function showErrorText(message) {
+        const container = document.getElementById('search-error-container');
+        container.innerHTML = `<div class="search-error-text">${message}</div>`;
+    }
+    
+    function hideErrorText() {
+        const container = document.getElementById('search-error-container');
+        container.innerHTML = '';
+    }
+    
+    function filterCards(query) {
+        const sections = document.querySelectorAll('.earth-section');
+        let hasAnyResult = false;
+        
+        sections.forEach(section => {
+            const cards = section.querySelectorAll('.earth-card');
+            let sectionHasMatch = false;
+            
+            cards.forEach(card => {
+                const name = card.querySelector('.earth-card-name').innerText;
+                if (name.includes(query)) {
+                    card.style.display = 'block';
+                    sectionHasMatch = true;
+                    hasAnyResult = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            if (sectionHasMatch) {
+                section.classList.remove('hidden');
+            } else {
+                section.classList.add('hidden');
+            }
+        });
+        
+        updateSideNav();
+    }
+    
+    function updateSideNav() {
+        const visibleSections = document.querySelectorAll('.earth-section:not(.hidden)');
+        const tags = document.querySelectorAll('.earth-pendant-tag');
+        
+        tags.forEach((tag, idx) => {
+            const section = document.getElementById(`section-${idx}`);
+            if (section && section.classList.contains('hidden')) {
+                tag.style.display = 'none';
+            } else {
+                tag.style.display = 'block';
+            }
+        });
+    }
+    
+    function resetAllSections() {
+        const sections = document.querySelectorAll('.earth-section');
+        sections.forEach(section => {
+            section.classList.remove('hidden');
+            const cards = section.querySelectorAll('.earth-card');
+            cards.forEach(card => {
+                card.style.display = 'block';
+            });
+        });
+        
+        const tags = document.querySelectorAll('.earth-pendant-tag');
+        tags.forEach(tag => {
+            tag.style.display = 'block';
+        });
+    }
+
+    function openDetail(id) {
+    const d = wikiDB[id];
+    const mBody = document.getElementById('m-body');
+    mBody.innerHTML = `
+        <div class="modal-header">
+            <h3 class="modal-title">${d.n}</h3>
+            <span class="modal-close-btn" onclick="closeModal()">✕</span>
+        </div>
+        <div class="modal-body">
+            <p><strong>【功能意蕴】</strong><br>${d.func || d.culture || '资料整理中...'}</p>
+            <p><strong>【营造逻辑】</strong><br>${d.logic || '资料整理中...'}</p>
+        </div>
+    `;
+    document.getElementById('modal').style.display = 'flex';
+}
+</script>
+
+<!-- AI 智能体 SDK -->
+</body>
+</html>

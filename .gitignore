@@ -1,0 +1,19 @@
+# ---- IDE / 编辑器 ----
+.idea/
+.vs/
+.vscode/
+*.iml
+
+# ---- 误创建的下载目录 ----
+Users/
+
+# ---- 运行时生成的用户数据（含密码哈希，禁止提交）----
+users.json
+
+# ---- 系统垃圾文件 ----
+Thumbs.db
+desktop.ini
+.DS_Store
+*~
+*.tmp
+*.log

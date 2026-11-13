@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>构造分类 - 中国古代园林</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 针对构造页面的特殊样式补充 */
+        body { margin: 0; background-color: var(--page-bg-1); overflow: hidden; }
+        #particle-canvas { 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            z-index: 1; pointer-events: none; 
+        }
+        
+        /* 背景亮度调节蒙版 */
+        .bg-brightness-mask {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(240, 248, 244, 0.75) 50%, rgba(255, 255, 255, 0.85) 100%);
+        }
+        
+        /* 覆盖一些 container 样式确保不遮挡 3D 效果 */
+        .container { position: relative; z-index: 2; pointer-events: none; }
+        .tab-bar { pointer-events: auto; }
+        
+        /* 导航栏布局 */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-title {
+            font-size: 24px;
+            color: var(--emphasis);
+            padding: 15px 30px;
+            cursor: pointer;
+        }
+        .nav-title i { margin-right: 10px; }
+        
+        /* 内容面板样式 */
+        #content-overlay {
+            position: fixed; top: 48%; left: 50%; transform: translate(-50%, -50%);
+            width: 85%; max-width: 1200px; height: 75vh;
+            background: var(--card-bg);
+            border: 1px solid var(--bg-divider); border-radius: 12px;
+            display: none; z-index: 2000; overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            pointer-events: auto;
+        }
+        .scroll-container { display: flex; width: 100%; height: 100%; }
+        .sidebar { width: 260px; background: var(--page-bg-2); border-right: 1px solid var(--bg-divider); padding: 20px 0; overflow-y: auto; }
+        .tab-btn { 
+            width: 100%; padding: 15px 25px; text-align: left; border: none; background: none; 
+            cursor: pointer; color: var(--body-text); font-size: 14px; transition: 0.3s; border-left: 4px solid transparent;
+        }
+        .tab-btn.active { background: var(--card-bg); color: var(--emphasis); font-weight: bold; border-left-color: var(--emphasis); }
+        .content-area { flex: 1; padding: 40px 60px; overflow-y: auto; background: var(--card-bg); }
+        
+        h2 { color: var(--emphasis); margin-top: 0; border-bottom: 2px solid var(--bg-divider); padding-bottom: 10px; }
+        h3 { color: var(--title-color); font-size: 18px; margin-top: 25px; border-left: 4px solid var(--emphasis); padding-left: 10px; }
+        p { line-height: 1.8; color: var(--body-text); font-size: 15px; margin-bottom: 15px; text-align: justify; }
+        
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 24px; color: var(--emphasis); cursor: pointer; background:none; border:none; z-index: 100; }
+        
+        /* 控制详情区域的显示/隐藏 */
+        .detail-section { display: none; }
+        .detail-section.active { display: block; }
+        
+        /* 提示文字 */
+        .hint-text {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            color: var(--sub-title); font-size: 14px; z-index: 5; opacity: 0.7;
+        }
+        
+        /* 粒子界面返回按钮 */
+        .particle-back-btn {
+            position: relative; /* 改为相对定位，跟随导航栏布局 */
+            /* 移除 fixed 相关的定位属性 */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border: 2px solid var(--emphasis);
+            color: var(--emphasis);
+            background: var(--card-bg);
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-right: 20px; /* 右侧留白 */
+        }
+        .particle-back-btn:hover {
+            background: var(--emphasis);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+    </style>
+    <script src="asset-manifest.js"></script>
+    <script src="runtime.js"></script>
+</head>
+<body>
+
+<div class="bg-brightness-mask"></div>
+<div id="particle-canvas"></div>
+
+<nav>
+    <div class="nav-title" onclick="window.location.href='home.html'" style="cursor: pointer;" title="返回首页">
+        <i class="fa-solid fa-leaf"></i> 中国古典园林科普系统
+    </div>
+    <button class="particle-back-btn" onclick="window.location.href='earth.html'">
+        <i class="fa-solid fa-arrow-left"></i> 返回构造分类
+    </button>
+</nav>
+
+<div class="container">
+    <div class="tab-bar">
+        <div class="tab" onclick="window.location.href='gallery.html'"><i class="fa-solid fa-sitemap"></i> 历代风华</div>
+        <div class="tab active" onclick="window.location.href='earth.html'"><i class="fa-solid fa-cubes"></i> 构造分类</div>
+        <div class="tab" onclick="window.location.href='philosophy.html'"><i class="fa-solid fa-scroll"></i> 人物与著作</div>
+        <div class="tab" onclick="window.location.href='game.html'"><i class="fa-solid fa-hourglass-half"></i> 意象哲学</div>
+        <div class="tab" onclick="window.location.href='fun.html'"><i class="fa-solid fa-robot"></i> AI 智囊</div>
+    </div>
+</div>
+
+<div class="hint-text">—— 鼠标滑过屏幕中间区域以触发聚拢，点击文字查看详情 ——</div>
+
+<div id="content-overlay">
+    <button class="close-btn" onclick="closeOverlay()"><i class="fa-solid fa-times"></i></button>
+    <div class="scroll-container">
+        <div class="sidebar" id="sidebar-tabs"></div>
+        <div class="content-area" id="content-body"></div>
+    </div>
+</div>
+
+<script src="vendor/three.min.js"></script>
+<script>
+    // 1. 数据定义 (放入 JS 中管理)
+    const gardenData = [
+        {
+            title: "一、皇家园林",
+            short: "皇家园林",
+            sections: [
+                { subtitle: "1. 空间与功能", content: "规模宏大，中轴对称布局，分政治活动区、生活起居区、游赏区，服务于皇室日常与礼仪需求。" },
+                { subtitle: "2. 山水骨架", content: "仿“一池三山”格局（太液池+蓬瀛方丈），山水尺度宏大，多依托自然山水扩建。" },
+                { subtitle: "3. 建筑体系", content: "体量高大、色彩富丽（黄琉璃瓦、红墙），等级森严，融合南北建筑风格。" },
+                { subtitle: "4. 动植物配置", content: "以松柏、国槐等象征威严的乔木为主，配牡丹、玉兰等名贵花卉；动物多为珍禽异兽。" },
+                { subtitle: "5. 道路与铺地", content: "主路宽阔平直；铺地以青石板、金砖为主，重要节点用汉白玉、琉璃砖装饰。" },
+                { subtitle: "6. 构造核心原则", content: "皇权至上，融政治、生活、游赏于一体，追求宏大叙事与礼制规范。" }
+            ]
+        },
+        {
+            title: "二、江南园林",
+            short: "江南园林",
+            sections: [
+                { subtitle: "1. 空间与功能", content: "尺度小巧，空间曲折多变，“小中见大”，服务于文人雅士精神寄托。" },
+                { subtitle: "2. 山水骨架", content: "写意山水，叠山（太湖石）理水（曲水、池沼）模仿自然，追求“宛自天开”。" },
+                { subtitle: "3. 建筑体系", content: "小巧精致，白墙黛瓦，色彩素雅，布局灵活，建筑与山水相融。" },
+                { subtitle: "4. 动植物配置", content: "植物以竹、荷、梅、兰为主；动物多为锦鲤，营造清幽雅致氛围。" },
+                { subtitle: "5. 道路与铺地", content: "路径曲折，多设廊、桥；铺地纹样灵动（冰裂纹、海棠纹）。" },
+                { subtitle: "6. 构造核心原则", content: "文人写意，咫尺山林，因地制宜，强调人与自然的诗意互动。" }
+            ]
+        },
+        {
+            title: "三、岭南园林",
+            short: "岭南园林",
+            sections: [
+                { subtitle: "1. 空间与功能", content: "空间开敞通透，兼顾通风散热，适配湿热气候，实用性强。" },
+                { subtitle: "2. 山水骨架", content: "尺度适中，叠山多用英石，理水注重通风降温（冷巷、水庭）。" },
+                { subtitle: "3. 建筑体系", content: "镬耳山墙、满洲窗为特色，色彩明快（灰塑、陶塑），通风采光佳。" },
+                { subtitle: "4. 动植物配置", content: "以热带品种为主（榕树、荔枝），四季繁花；动物多为岭南特色禽鸟。" },
+                { subtitle: "5. 道路与铺地", content: "设冷巷通风；铺地以麻石为主，纹样简洁实用，兼顾排水。" },
+                { subtitle: "6. 构造核心原则", content: "兼容并蓄，实用为先，融合中西造园手法，适配地域文化。" }
+            ]
+        }
+    ];
+
+    // 2. 3D 粒子逻辑
+    let scene, camera, renderer, cloud;
+    const count = 100000; 
+    let isAnchored = false;
+    let targetPositions = [];
+
+    function init3D() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 3000);
+        camera.position.z = 1000;
+
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('particle-canvas').appendChild(renderer.domElement);
+
+        // 采样文字
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 1200; canvas.height = 800;
+        ctx.fillStyle = 'black'; ctx.fillRect(0,0,1200,800);
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 70px "STKaiti", "Microsoft YaHei"';
+        ctx.textAlign = 'center';
+
+        gardenData.forEach((g, idx) => {
+            const x = 250 + idx * 350;
+            for(let i=0; i<g.short.length; i++) {
+                ctx.fillText(g.short[i], x, 280 + i * 95); 
+            }
+        });
+
+        const data = ctx.getImageData(0,0,1200,800).data;
+        for (let y=0; y<800; y+=1) {
+            for (let x=0; x<1200; x+=1) {
+                if (data[(y*1200+x)*4] > 128) {
+                    targetPositions.push({ x: (x-600)*2.3, y: (400-y)*2.3, z: 0 });
+                }
+            }
+        }
+
+        const geo = new THREE.BufferGeometry();
+        const pos = new Float32Array(count * 3);
+        for(let i=0; i<count; i++) {
+            pos[i*3] = (Math.random()-0.5)*3000;
+            pos[i*3+1] = (Math.random()-0.5)*2000;
+            pos[i*3+2] = (Math.random()-0.5)*1000;
+        }
+        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        
+        const mat = new THREE.PointsMaterial({ 
+            size: 4.5, color: 0x2d6a4f, transparent: true, opacity: 0.8,
+            map: createCircleTexture(), alphaTest: 0.5, depthWrite: false
+        });
+        
+        cloud = new THREE.Points(geo, mat);
+        scene.add(cloud);
+
+        window.addEventListener('mousemove', e => {
+            const my = Math.abs(-(e.clientY/window.innerHeight)*2+1);
+            isAnchored = my < 0.65;
+        });
+
+        window.addEventListener('click', e => {
+            if(!isAnchored || e.target.closest('#content-overlay, nav, button, a, .garden-assistant-panel')) return;
+            const mx = (e.clientX/window.innerWidth)*2-1;
+            if(mx < -0.35) openOverlay(0);
+            else if(mx > 0.35) openOverlay(2);
+            else openOverlay(1);
+        });
+
+        animate();
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    }
+
+    function createCircleTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64; canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        ctx.beginPath(); ctx.arc(32, 32, 30, 0, Math.PI*2);
+        ctx.fillStyle = '#ffffff'; ctx.fill();
+        return new THREE.CanvasTexture(canvas);
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        const positions = cloud.geometry.attributes.position.array;
+        const lerpFactor = isAnchored ? 0.03 : 0.02; // 缓慢聚拢
+
+        for(let i=0; i<count; i++) {
+            const ix=i*3, iy=i*3+1, iz=i*3+2;
+            if(isAnchored) {
+                const target = targetPositions[i % targetPositions.length];
+                positions[ix] += (target.x - positions[ix]) * 0.05;
+                positions[iy] += (target.y - positions[iy]) * 0.05;
+                positions[iz] += (0 - positions[iz]) * 0.05;
+            } else {
+                positions[ix] += Math.sin(Date.now()*0.0005 + i)*0.3;
+                positions[iy] += Math.cos(Date.now()*0.0005 + i)*0.3;
+            }
+        }
+        cloud.geometry.attributes.position.needsUpdate = true;
+        renderer.render(scene, camera);
+    }
+
+    // 3. UI 交互逻辑
+    function openOverlay(index) {
+        const overlay = document.getElementById('content-overlay');
+        overlay.style.display = 'block';
+        
+        const sidebar = document.getElementById('sidebar-tabs');
+        const body = document.getElementById('content-body');
+        sidebar.innerHTML = ''; body.innerHTML = '';
+
+        // 生成所有标签页的侧边栏按钮
+        gardenData.forEach((g, i) => {
+            const btn = document.createElement('button');
+            btn.className = `tab-btn ${i === index ? 'active' : ''}`;
+            btn.innerText = g.title;
+            btn.onclick = () => showTab(i);
+            sidebar.appendChild(btn);
+        });
+
+        // 生成所有标签页的内容区域
+        gardenData.forEach((g, i) => {
+            const section = document.createElement('div');
+            section.className = `detail-section ${i === index ? 'active' : ''}`;
+            // 直接显示标题，不添加返回按钮
+            let html = `<h2>${g.title}</h2>`;
+            g.sections.forEach(s => html += `<h3>${s.subtitle}</h3><p>${s.content}</p>`);
+            section.innerHTML = html;
+            body.appendChild(section);
+        });
+    }
+
+    function showTab(index) {
+        const tabs = document.getElementsByClassName('tab-btn');
+        const sections = document.getElementsByClassName('detail-section');
+        for(let i=0; i<tabs.length; i++) {
+            tabs[i].classList.remove('active');
+            sections[i].classList.remove('active');
+        }
+        tabs[index].classList.add('active');
+        sections[index].classList.add('active');
+    }
+
+    function closeOverlay() {
+        document.getElementById('content-overlay').style.display = 'none';
+    }
+
+    function toggleNightMode() {
+        // 调用你 style.css 中的夜间模式切换逻辑
+        document.body.classList.toggle('night-mode');
+    }
+
+    window.onload = function() {
+        try { init3D(); } catch (error) {
+            // Keep all learning content accessible without WebGL.
+            const container = document.getElementById('particle-canvas');
+            container.style.pointerEvents = 'auto';
+            container.className = 'particle-fallback';
+            container.replaceChildren();
+            gardenData.forEach((item, index) => {
+                const button = document.createElement('button');
+                button.textContent = item.short;
+                button.onclick = () => openOverlay(index);
+                container.appendChild(button);
+            });
+        }
+    };
+</script>
+
+<!-- AI 智能体 SDK -->
+
+</body>
+</html>
